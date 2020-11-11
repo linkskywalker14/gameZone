@@ -1,0 +1,3 @@
+Store player names and scores in local storage. 
+
+Pig dice should display actual dice, using only two images: a blank die, and a pip image that is replicated and displayed as many times as is appropriate. 
