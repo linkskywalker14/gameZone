@@ -80,3 +80,19 @@ function aiPlayer(){
   console.log("COMPUTER ends the round with " + robotScore + " points.");
   player = true;
 }
+
+
+
+
+// USER INTERFACE LOGIC
+
+$(document).ready(function() {
+
+  $("#controls").on("click", ".roll",function() {
+    click();
+  });
+  $("#controls").on("click", ".hold",function() {
+    hold();
+  });
+
+});
