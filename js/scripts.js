@@ -1,17 +1,28 @@
 //Global Variables. Have none by the end. 
 
-let score = 0;
+let playerScore = 0;
 let robotScore = 0;
+
 let roundTotal = 0;
+
+let cheating = false;
 player = true;
 
 
+
 function rollD6(){
-  return parseInt(Math.random() * 5 + 1);
+  if (cheating === true){
+    const loadedD6 = [1, 2, 3, 4, 4, 5, 6, 6];
+    const x = parseInt(Math.random() * 8 + 0);
+    console.log("I'm cheating by rolling a d8. I got a " + x);
+    return loadedD6[x];
+  } else {
+    return parseInt(Math.random() * 5 + 1);
+  }
 }
 
 function winCheck(){
-  if (player && score + roundTotal >= 100){
+  if (player && playerScore + roundTotal >= 100){
     console.log("WE ARE SAVED! THE PLAYER WINS!");
   } else if (!player && robotScore + roundTotal >= 100){
     console.log("WE ARE DOOMED! THE EVIL COMPUTER HAS WON!");
@@ -44,9 +55,9 @@ function click(){
 }
 
 function hold(){
-  score = score + roundTotal;
+  playerScore = playerScore + roundTotal;
   roundTotal = 0;
-  console.log("The player has chosen to end their turn with " + score + " points. The turn now passes to the EVIL COMPUTER.");
+  console.log("The player has chosen to end their turn with " + playerScore + " points. The turn now passes to the EVIL COMPUTER.");
   aiPlayer();
 }
 
@@ -54,11 +65,11 @@ function aiGoal(){
   if (100 <= robotScore + 20) {
     console.log("The EVIL COMPUTER speaks: 'Looks like we're in end game now, HOOMAN!'");
     return 100;
-  } else if (15 < score - robotScore) {
+  } else if (15 < playerScore - robotScore) {
     return robotScore + 15;
-  } else if (score > robotScore){
-    return score + 1;
-  } else if (score <= robotScore){
+  } else if (playerScore > robotScore){
+    return playerScore + 1;
+  } else if (playerScore <= robotScore){
     return robotScore + 5;
   }
 }
