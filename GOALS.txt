@@ -1,3 +1,11 @@
 Store player names and scores in local storage. 
 
-Pig dice should display actual dice, using only two images: a blank die, and a pip image that is replicated and displayed as many times as is appropriate. 
+Pig dice should display actual dice, using only two images: a blank die, and a pip image that is replicated and displayed as many times as is appropriate.
+
+Link multiple JS files together so as not to repeat unecessary code. 
+
+Two AI difficulty levels for each game.
+
+A cheating button for PigDice that lets you "load" your dice, so every result but 1 has double the usual chance of appearing. 
+
+Option to play with AI *or* with another human playing locally
