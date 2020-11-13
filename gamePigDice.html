@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
-  <title>TITLE OF THE PAGE</title>
+  <title>Pig Dice</title>
   <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
   <link href="css/styles.css" rel="stylesheet" type="text/css">
   <script src="js/jquery-3.5.1.js"></script>
@@ -12,14 +12,23 @@
   <div class="container">
     <h1>Pig Dice</h1>
     <div class="row">
-      <div class="col-md-4"></div>
-      <div class="col-md-4">
+      <div class="col-md-2"></div>
+      <div class="col-md-5">
         <div id="controls">
           <button class="roll">ROLL THE D6</button>
           <button class="hold">HOOOOOOLD</button>
+          <br /><br />
+          <div id="theDie">
+            <span id="dieFace"><img src="img/pip.gif" /><img src="img/nopip.gif" /><img src="img/pip.gif" /><br/><img src="img/pip.gif" /><img src="img/nopip.gif" /><img src="img/pip.gif" /><br /><img src="img/pip.gif" /><img src="img/nopip.gif" /><img src="img/pip.gif" /></span>
+          </div>
+        </div>
+        <div id="endgame">
+          <span id="victor"></span>
         </div>
       </div>
-      <div class="col-md-4"></div>
+      <div class="col-md-5">
+        <h4>This is where round-by-round will go</h4>
+      </div>
     </div>
   </div>
 </body>

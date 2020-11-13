@@ -2,9 +2,7 @@
 
 let playerScore = 0;
 let robotScore = 0;
-
 let roundTotal = 0;
-
 let cheating = false;
 player = true;
 
@@ -23,9 +21,13 @@ function rollD6(){
 
 function winCheck(){
   if (player && playerScore + roundTotal >= 100){
-    console.log("WE ARE SAVED! THE PLAYER WINS!");
+    $("#controls").hide();
+    $("#endgame").show();
+    $("#victor").append("WE ARE SAVED! THE PLAYER WINS!");
   } else if (!player && robotScore + roundTotal >= 100){
-    console.log("WE ARE DOOMED! THE EVIL COMPUTER HAS WON!");
+    $("#controls").hide();
+    $("#endgame").show();
+    $("#victor").append("WE ARE DOOMED! THE EVIL ROBO-PIG HAS WON!");
   }
 }
 
