@@ -39,7 +39,7 @@ function displayTurns(rounds){
   let turnList = $("ul#turns");
   let htmlForList = "";
   rounds.forEach(function(x) {
-    htmlForList += "<li class='turnList' id='" + x.player +"turn'><u><strong>Turn " + x.turn + ":</strong></u> " + x.player + " rolled some numbers. <br />Turn ended in a " + x.ending + ". They added " + x.round + " to their score, for a <strong>total of " + x.total + ".</strong>";
+    htmlForList += "<li class='turnList' id='" + x.player +"turn'><u><strong>Turn " + x.turn + ":</strong></u> " + x.player + " rolled " + x.rolls.length + " times. (" + x.rolls + ") <br />Turn ended in a " + x.ending + ". They added " + x.round + " to their score, for a <strong>total of " + x.total + ".</strong>";
   });
   turnList.html(htmlForList);
 }
@@ -103,30 +103,30 @@ function roundEnd(hold){
   if (hold === true){
     if(player === false){
       playerScore = playerScore + roundTotal;
-      rounds[roundIndex].ending = "hold";
-      rounds[roundIndex].round = roundTotal;
-      rounds[roundIndex].total = playerScore;
+      rounds[0].ending = "hold";
+      rounds[0].round = roundTotal;
+      rounds[0].total = playerScore;
       roundTotal = 0;
       aiPlayer();
     } else {
       robotScore = robotScore + roundTotal;
-      rounds[roundIndex].ending = "hold";
-      rounds[roundIndex].round = roundTotal;
-      rounds[roundIndex].total = robotScore;
+      rounds[0].ending = "hold";
+      rounds[0].round = roundTotal;
+      rounds[0].total = robotScore;
       roundTotal = 0;
     }
   } else {
     if (player === false){
       roundTotal = 0;
-      rounds[roundIndex].ending = "break";
-      rounds[roundIndex].round = roundTotal;
-      rounds[roundIndex].total = playerScore;
+      rounds[0].ending = "break";
+      rounds[0].round = roundTotal;
+      rounds[0].total = playerScore;
       aiPlayer();
     } else {
       roundTotal = 0;
-      rounds[roundIndex].ending = "break";
-      rounds[roundIndex].round = roundTotal;
-      rounds[roundIndex].total = robotScore;
+      rounds[0].ending = "break";
+      rounds[0].round = roundTotal;
+      rounds[0].total = robotScore;
     }
   }  
 }
@@ -156,14 +156,14 @@ function initialize(){
   playerScore = 0;
   robotScore = 0;
   roundTotal = 0;
-  rounds.push(new Round("Human", [], "", 0, 0));
+  rounds.unshift(new Round("Human", [], "", 0, 0));
 }
 
 //The click function runs whenever either player rolls the dice.
 function click(){
   const face = rollD6();
   displayFace(face);
-  rounds[roundIndex].rolls.push(face);
+  rounds[0].rolls.push(face);
   if (face === 1) {
     roundEnd();
   } else {
@@ -187,7 +187,7 @@ function hold(){
 function aiPlayer(){
   displayTurns(rounds);
   roundIndex++;
-  rounds.push(new Round("Computer", [], "", 0, 0));
+  rounds.unshift(new Round("Computer", [], "", 0, 0));
   const goal = aiGoal();
   do {
     click();
@@ -200,7 +200,7 @@ function aiPlayer(){
   }
   displayTurns(rounds);
   roundIndex++;
-  rounds.push(new Round("Human", [], "", 0, 0));
+  rounds.unshift(new Round("Human", [], "", 0, 0));
 }
 
 //the cheatMode function runs when the player clicks the cheating button.
