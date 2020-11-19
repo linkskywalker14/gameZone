@@ -26,11 +26,22 @@ let player = true;
 
 //the Rounds constructor records information about each round of play for display.
 function Round(player, rolls, ending, round, total) {
+  this.turn = roundIndex + 1;
   this.player = player;
   this.rolls = rolls;
   this.ending = ending;
   this.round = round;
   this.total = total;
+}
+
+//The displayTurns function shows all the moves in a given game. Runs at the end of a turn.
+function displayTurns(rounds){
+  let turnList = $("ul#turns");
+  let htmlForList = "";
+  rounds.forEach(function(x) {
+    htmlForList += "<li class='turnList' id='" + x.player +"turn'><u><strong>Turn " + x.turn + ":</strong></u> " + x.player + " rolled some numbers. <br />Turn ended in a " + x.ending + ". They added " + x.round + " to their score, for a <strong>total of " + x.total + ".</strong>";
+  });
+  turnList.html(htmlForList);
 }
 
 //The displayFace function arranges the pips on the die. 
@@ -92,34 +103,30 @@ function roundEnd(hold){
   if (hold === true){
     if(player === false){
       playerScore = playerScore + roundTotal;
-      rounds[roundIndex].ending = "Chose to hold.";
+      rounds[roundIndex].ending = "hold";
       rounds[roundIndex].round = roundTotal;
       rounds[roundIndex].total = playerScore;
       roundTotal = 0;
-      console.log("Player chooses to end with " + playerScore + " points. Turn passes to computer.");
       aiPlayer();
     } else {
       robotScore = robotScore + roundTotal;
-      rounds[roundIndex].ending = "Chose to hold.";
+      rounds[roundIndex].ending = "hold";
       rounds[roundIndex].round = roundTotal;
       rounds[roundIndex].total = robotScore;
       roundTotal = 0;
-      console.log("Computer chooses to end with " + robotScore + " points. Turn passes to player.");
     }
   } else {
     if (player === false){
-      console.log("!!!THE PLAYER ROLLED A ONE!!!");
       roundTotal = 0;
-      rounds[roundIndex].ending = "BREAK!";
+      rounds[roundIndex].ending = "break";
       rounds[roundIndex].round = roundTotal;
       rounds[roundIndex].total = playerScore;
       aiPlayer();
     } else {
-      console.log("!!!THE COMPUTER ROLLED A ONE!!!");
       roundTotal = 0;
-      rounds[roundIndex].ending = "BREAK!";
+      rounds[roundIndex].ending = "break";
       rounds[roundIndex].round = roundTotal;
-      rounds[roundIndex].total = playerScore;
+      rounds[roundIndex].total = robotScore;
     }
   }  
 }
@@ -127,7 +134,6 @@ function roundEnd(hold){
 //the aiGoal function runs at the beginning of the AI turn. It decides what number the AI will try to reach before choosing to end its turn.
 function aiGoal(){
   if (100 <= robotScore + 20) {
-    console.log("The EVIL COMPUTER speaks: 'Looks like we're in end game now, HOOMAN!'");
     return 100;
   } else if (15 < playerScore - robotScore) {
     return robotScore + 15;
@@ -165,10 +171,8 @@ function click(){
     winCheck();
     switch (player) {
       case (true):
-        console.log("players rolls " + face + ". Round total is now " + roundTotal);
         break;
       default:
-        console.log("EVIL PIG ROLLS " + face + ". EVIL TOTAL IS NOW  " + roundTotal);
     }
   } 
 }
@@ -181,6 +185,7 @@ function hold(){
 
 //the aiPlayer function runs anytime it stops being the player's turn.
 function aiPlayer(){
+  displayTurns(rounds);
   roundIndex++;
   rounds.push(new Round("Computer", [], "", 0, 0));
   const goal = aiGoal();
@@ -193,6 +198,7 @@ function aiPlayer(){
   if (roundTotal != 0){
     hold();
   }
+  displayTurns(rounds);
   roundIndex++;
   rounds.push(new Round("Human", [], "", 0, 0));
 }

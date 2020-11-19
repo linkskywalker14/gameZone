@@ -17,6 +17,20 @@ h1, h4 {
   margin: 0;
 }
 
+.turnList {
+  list-style-type: none;
+  text-indent: -25px;
+  padding: 0 0 0 30px;
+}
+
+#Humanturn {
+  background-color: #9CFDFF;
+}
+
+#Computerturn {
+  background-color: #A60098;
+  color: white;
+}
 
 /*Styling for the Results section of both the Loop and RegEx pages*/
 
