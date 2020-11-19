@@ -1,16 +1,3 @@
-/* DEAL WITH THIS LATER
-
-function Round(player, rolls, ending, total) {
-  this.player = player;
-  this.rolls = rolls;
-  this.ending = ending;
-  this.total = total;
-}
-
-rounds.push(new Round());
-
-*/
-
 //PIG DICE
 //1. Global Variables
 //2. Ancilary Modules
@@ -27,14 +14,24 @@ let roundTotal = 0;
 
 //The three above seem necessary, given my current limitations. The three below haven't been assessed yet.
 
-let cheating = false;
 let rounds = [];
-player = true;
+let roundIndex = 0;
+let cheating = false;
+let player = true;
 
 //######
 //2. Ancilary Modules
 // 1, 2, 3--an Index
 //######
+
+//the Rounds constructor records information about each round of play for display.
+function Round(player, rolls, ending, round, total) {
+  this.player = player;
+  this.rolls = rolls;
+  this.ending = ending;
+  this.round = round;
+  this.total = total;
+}
 
 //The displayFace function arranges the pips on the die. 
 function displayFace(face){
@@ -95,11 +92,17 @@ function roundEnd(hold){
   if (hold === true){
     if(player === false){
       playerScore = playerScore + roundTotal;
+      rounds[roundIndex].ending = "Chose to hold.";
+      rounds[roundIndex].round = roundTotal;
+      rounds[roundIndex].total = playerScore;
       roundTotal = 0;
       console.log("Player chooses to end with " + playerScore + " points. Turn passes to computer.");
       aiPlayer();
     } else {
       robotScore = robotScore + roundTotal;
+      rounds[roundIndex].ending = "Chose to hold.";
+      rounds[roundIndex].round = roundTotal;
+      rounds[roundIndex].total = robotScore;
       roundTotal = 0;
       console.log("Computer chooses to end with " + robotScore + " points. Turn passes to player.");
     }
@@ -107,10 +110,16 @@ function roundEnd(hold){
     if (player === false){
       console.log("!!!THE PLAYER ROLLED A ONE!!!");
       roundTotal = 0;
+      rounds[roundIndex].ending = "BREAK!";
+      rounds[roundIndex].round = roundTotal;
+      rounds[roundIndex].total = playerScore;
       aiPlayer();
     } else {
       console.log("!!!THE COMPUTER ROLLED A ONE!!!");
       roundTotal = 0;
+      rounds[roundIndex].ending = "BREAK!";
+      rounds[roundIndex].round = roundTotal;
+      rounds[roundIndex].total = playerScore;
     }
   }  
 }
@@ -141,12 +150,14 @@ function initialize(){
   playerScore = 0;
   robotScore = 0;
   roundTotal = 0;
+  rounds.push(new Round("Human", [], "", 0, 0));
 }
 
 //The click function runs whenever either player rolls the dice.
 function click(){
   const face = rollD6();
   displayFace(face);
+  rounds[roundIndex].rolls.push(face);
   if (face === 1) {
     roundEnd();
   } else {
@@ -170,6 +181,8 @@ function hold(){
 
 //the aiPlayer function runs anytime it stops being the player's turn.
 function aiPlayer(){
+  roundIndex++;
+  rounds.push(new Round("Computer", [], "", 0, 0));
   const goal = aiGoal();
   do {
     click();
@@ -180,6 +193,8 @@ function aiPlayer(){
   if (roundTotal != 0){
     hold();
   }
+  roundIndex++;
+  rounds.push(new Round("Human", [], "", 0, 0));
 }
 
 //the cheatMode function runs when the player clicks the cheating button.
