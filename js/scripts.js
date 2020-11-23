@@ -10,14 +10,12 @@
 
 let playerScore = 0;
 let robotScore = 0;
-let roundTotal = 0;
 
 //The three above seem necessary, given my current limitations. The three below haven't been assessed yet.
 
 let rounds = [];
 let roundIndex = 0;
 let cheating = false;
-let player = true;
 
 //######
 //2. Ancilary Modules
@@ -34,12 +32,20 @@ function Round(player, rolls, ending, round, total) {
   this.total = total;
 }
 
+Round.prototype.who = function(){
+  if (this.player === true){
+    return "Our noble Human champion";
+  } else {
+    return "The evil ROBO PIG oppressor";
+  }
+}
+
 //The displayTurns function shows all the moves in a given game. Runs at the end of a turn.
 function displayTurns(rounds){
   let turnList = $("ul#turns");
   let htmlForList = "";
   rounds.forEach(function(x) {
-    htmlForList += "<li class='turnList' id='" + x.player +"turn'><u><strong>Turn " + x.turn + ":</strong></u> " + x.player + " rolled " + x.rolls.length + " times. (" + x.rolls + ") <br />Turn ended in a " + x.ending + ". They added " + x.round + " to their score, for a <strong>total of " + x.total + ".</strong>";
+    htmlForList += "<li class='turnList' id='" + x.player +"turn'><u><strong>Turn " + x.turn + ":</strong></u> " + x.who() + " rolled " + x.rolls.length + " times. (" + x.rolls + ") <br />Turn ended in a " + x.ending + ". They added " + x.round + " to their score, for a <strong>total of " + x.total + ".</strong>";
   });
   turnList.html(htmlForList);
 }
@@ -84,12 +90,12 @@ function rollD6(){
 
 //the winCheck function is run after every die roll to see if the active player has gotten enough points to win.
 function winCheck(){
-  if (player && playerScore + roundTotal >= 100){
+  if (rounds[0].player && playerScore + rounds[0].round >= 100){
     $("#controls").hide();
     $("#endgame").show();
     $("#victor").append("WE ARE SAVED! THE PLAYER WINS!");
     $("#pregame").show();
-  } else if (!player && robotScore + roundTotal >= 100){
+  } else if (!rounds[0].player && robotScore + rounds[0].round >= 100){
     $("#controls").hide();
     $("#endgame").show();
     $("#victor").append("WE ARE DOOMED! THE EVIL ROBO-PIG HAS WON!");
@@ -99,33 +105,26 @@ function winCheck(){
 
 //the roundEnd function is INCOMPLETE. It runs either when a 1 is rolled, or when hold occurs. 
 function roundEnd(hold){
-  player = !player;
   if (hold === true){
-    if(player === false){
-      playerScore = playerScore + roundTotal;
+    if(rounds[0].player === true){
+      playerScore = playerScore + rounds[0].round;
       rounds[0].ending = "hold";
-      rounds[0].round = roundTotal;
       rounds[0].total = playerScore;
-      roundTotal = 0;
       aiPlayer();
     } else {
-      robotScore = robotScore + roundTotal;
+      robotScore = robotScore + rounds[0].round;
       rounds[0].ending = "hold";
-      rounds[0].round = roundTotal;
       rounds[0].total = robotScore;
-      roundTotal = 0;
     }
   } else {
-    if (player === false){
-      roundTotal = 0;
+    if (rounds[0].player === true){
+      rounds[0].round = 0;
       rounds[0].ending = "break";
-      rounds[0].round = roundTotal;
       rounds[0].total = playerScore;
       aiPlayer();
     } else {
-      roundTotal = 0;
+      rounds[0].round = 0;
       rounds[0].ending = "break";
-      rounds[0].round = roundTotal;
       rounds[0].total = robotScore;
     }
   }  
@@ -155,8 +154,7 @@ function initialize(){
   $("#controls").show();
   playerScore = 0;
   robotScore = 0;
-  roundTotal = 0;
-  rounds.unshift(new Round("Human", [], "", 0, 0));
+  rounds.unshift(new Round(true, [], "", 0, 0));
 }
 
 //The click function runs whenever either player rolls the dice.
@@ -167,13 +165,8 @@ function click(){
   if (face === 1) {
     roundEnd();
   } else {
-    roundTotal = roundTotal + face;
+    rounds[0].round = rounds[0].round + face;
     winCheck();
-    switch (player) {
-      case (true):
-        break;
-      default:
-    }
   } 
 }
 
@@ -187,20 +180,20 @@ function hold(){
 function aiPlayer(){
   displayTurns(rounds);
   roundIndex++;
-  rounds.unshift(new Round("Computer", [], "", 0, 0));
+  rounds.unshift(new Round(false, [], "", 0, 0));
   const goal = aiGoal();
   do {
     click();
-    if (roundTotal === 0){
+    if (rounds[0].round === 0){
       break;
     }
-  } while (robotScore + roundTotal < goal);
-  if (roundTotal != 0){
+  } while (robotScore + rounds[0].round < goal);
+  if (rounds[0].round != 0){
     hold();
   }
   displayTurns(rounds);
   roundIndex++;
-  rounds.unshift(new Round("Human", [], "", 0, 0));
+  rounds.unshift(new Round(true, [], "", 0, 0));
 }
 
 //the cheatMode function runs when the player clicks the cheating button.
