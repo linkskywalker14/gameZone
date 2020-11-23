@@ -40,6 +40,10 @@ Round.prototype.who = function(){
   }
 }
 
+Round.prototype.totalScore = function(){
+  //Eventually this will swap scores between the two players. 
+}
+
 //The displayTurns function shows all the moves in a given game. Runs at the end of a turn.
 function displayTurns(rounds){
   let turnList = $("ul#turns");
