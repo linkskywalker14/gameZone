@@ -5,13 +5,6 @@
 //4. User Interface Logic
 
 //1. Global Variables
-//Unfortunately, after thorough googling, the only way I can find to pass variables through an onClick event is to use React.
-//Since this would seem necessary, and since I haven't learned React, I believe global variables are necessary.
-
-let playerScore = 0;
-let robotScore = 0;
-
-//The three above seem necessary, given my current limitations. The three below haven't been assessed yet.
 
 let rounds = [];
 let roundIndex = 0;
@@ -41,8 +34,13 @@ Round.prototype.who = function(){
 }
 
 Round.prototype.totalScore = function(){
-  //Eventually this will swap scores between the two players. 
+  if (rounds[2]){
+    return rounds[2].total + rounds[0].round;
+  } else {
+    return rounds[0].round;
+  }
 }
+
 
 //The displayTurns function shows all the moves in a given game. Runs at the end of a turn.
 function displayTurns(rounds){
@@ -94,12 +92,12 @@ function rollD6(){
 
 //the winCheck function is run after every die roll to see if the active player has gotten enough points to win.
 function winCheck(){
-  if (rounds[0].player && playerScore + rounds[0].round >= 100){
+  if (rounds[0].player && rounds[0].totalScore() >= 100){
     $("#controls").hide();
     $("#endgame").show();
     $("#victor").append("WE ARE SAVED! THE PLAYER WINS!");
     $("#pregame").show();
-  } else if (!rounds[0].player && robotScore + rounds[0].round >= 100){
+  } else if (!rounds[0].player && rounds[0].totalScore() >= 100){
     $("#controls").hide();
     $("#endgame").show();
     $("#victor").append("WE ARE DOOMED! THE EVIL ROBO-PIG HAS WON!");
@@ -111,39 +109,37 @@ function winCheck(){
 function roundEnd(hold){
   if (hold === true){
     if(rounds[0].player === true){
-      playerScore = playerScore + rounds[0].round;
       rounds[0].ending = "hold";
-      rounds[0].total = playerScore;
+      rounds[0].total = rounds[0].totalScore();
       aiPlayer();
     } else {
-      robotScore = robotScore + rounds[0].round;
       rounds[0].ending = "hold";
-      rounds[0].total = robotScore;
+      rounds[0].total = rounds[0].totalScore();
     }
   } else {
     if (rounds[0].player === true){
       rounds[0].round = 0;
       rounds[0].ending = "break";
-      rounds[0].total = playerScore;
+      rounds[0].total = rounds[0].totalScore();
       aiPlayer();
     } else {
       rounds[0].round = 0;
       rounds[0].ending = "break";
-      rounds[0].total = robotScore;
+      rounds[0].total = rounds[0].totalScore();
     }
   }  
 }
 
 //the aiGoal function runs at the beginning of the AI turn. It decides what number the AI will try to reach before choosing to end its turn.
 function aiGoal(){
-  if (100 <= robotScore + 20) {
+  if (100 <= rounds[0].totalScore() + 20) {
     return 100;
-  } else if (15 < playerScore - robotScore) {
-    return robotScore + 15;
-  } else if (playerScore > robotScore){
-    return playerScore + 1;
-  } else if (playerScore <= robotScore){
-    return robotScore + 5;
+  } else if (15 < rounds[1].total - rounds[0].totalScore()) {
+    return rounds[0].totalScore() + 15;
+  } else if (rounds[1].total > rounds[0].totalScore()){
+    return rounds[1].total + 1;
+  } else if (rounds[1].total <= rounds[0].totalScore()){
+    return rounds[0].totalScore() + 5;
   }
 }
 
@@ -156,8 +152,6 @@ function aiGoal(){
 function initialize(){
   $("#pregame").hide();
   $("#controls").show();
-  playerScore = 0;
-  robotScore = 0;
   rounds.unshift(new Round(true, [], "", 0, 0));
 }
 
@@ -186,12 +180,13 @@ function aiPlayer(){
   roundIndex++;
   rounds.unshift(new Round(false, [], "", 0, 0));
   const goal = aiGoal();
+  console.log(goal);
   do {
     click();
     if (rounds[0].round === 0){
       break;
     }
-  } while (robotScore + rounds[0].round < goal);
+  } while (rounds[0].totalScore() < goal);
   if (rounds[0].round != 0){
     hold();
   }
