@@ -56,3 +56,34 @@ table td{
 #controls {
   display: none;
 }
+
+
+/*Should defs be discarded*/
+
+.item {
+  padding: 5px 16px;
+  margin: 0px;
+  font-weight: bold;
+}
+
+.item:hover {
+  background-color: #E38DD1;
+}
+
+.optionContainer {
+  position: relative;
+  display: inline-block;
+}
+
+#options {
+  display: none;
+  position: absolute;
+  background-color: #B851A3;
+  min-width: 200px;
+  box-shadow: 0px 10px 25px 0px rgba(95, 0, 24, 0.562);
+  z-index: 1;
+}
+
+.optionContainer:hover #options {
+  display: block;
+}

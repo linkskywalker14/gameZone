@@ -200,8 +200,10 @@ function cheatMode(){
   cheating = !cheating;
   if (cheating === true){
     $("#theDie").css({'background-color':'#FFA340'});
+    $("#cheat").css({'background-color':'#FFA340'});
   } else {
     $("#theDie").css({'background-color':'#FAFADA'});
+    $("#cheat").css({'background-color':''});
   }
 }
 
@@ -220,8 +222,9 @@ $(document).ready(function() {
   $("#controls").on("click", ".hold",function() {
     hold();
   });
-  $("#controls").on("click", ".cheat",function() {
+
+
+  $("#options").on("click", "#cheat",function() {
     cheatMode();
   });
-
 });
