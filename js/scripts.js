@@ -9,6 +9,7 @@
 let rounds = [];
 let roundIndex = 0;
 let cheating = false;
+let twoDice = false;
 
 //######
 //2. Ancilary Modules
@@ -53,29 +54,29 @@ function displayTurns(rounds){
 }
 
 //The displayFace function arranges the pips on the die. 
-function displayFace(face){
+function displayFace(face, die){
   const pip = '<img src="img/pip.gif" />';
   const nopip = '<img src="img/nopip.gif" />';
   switch (face){
     case (1): 
-      $("#theDie").html(nopip + nopip + nopip + "<br />" + nopip + pip + nopip + "<br />" + nopip + nopip + nopip);
+      $(die).html(nopip + nopip + nopip + "<br />" + nopip + pip + nopip + "<br />" + nopip + nopip + nopip);
       break;
     case (2): 
-      $("#theDie").html(nopip + nopip + pip + "<br />" + nopip + nopip + nopip + "<br />" + pip + nopip + nopip);
+      $(die).html(nopip + nopip + pip + "<br />" + nopip + nopip + nopip + "<br />" + pip + nopip + nopip);
       break;
     case (3):  
-      $("#theDie").html(nopip + nopip + pip + "<br />" + nopip + pip + nopip + "<br />" + pip + nopip + nopip);
+      $(die).html(nopip + nopip + pip + "<br />" + nopip + pip + nopip + "<br />" + pip + nopip + nopip);
       break;
     case (4):  
-      $("#theDie").html(pip + nopip + pip + "<br />" + nopip + nopip + nopip + "<br />" + pip + nopip + pip);
+      $(die).html(pip + nopip + pip + "<br />" + nopip + nopip + nopip + "<br />" + pip + nopip + pip);
       break;
     case (5):  
-      $("#theDie").html(pip + nopip + pip + "<br />" + nopip + pip + nopip + "<br />" + pip + nopip + pip);
+      $(die).html(pip + nopip + pip + "<br />" + nopip + pip + nopip + "<br />" + pip + nopip + pip);
       break;
     case (6):  
-      $("#theDie").html(pip + nopip + pip + "<br />" + pip + nopip + pip + "<br />" + pip + nopip + pip);
+      $(die).html(pip + nopip + pip + "<br />" + pip + nopip + pip + "<br />" + pip + nopip + pip);
       break;
-    default: $("#theDie").html("What did you do!?");
+    default: $(die).html("What did you do!?");
   }
 }
 
@@ -93,16 +94,22 @@ function rollD6(){
 //the winCheck function is run after every die roll to see if the active player has gotten enough points to win.
 function winCheck(){
   if (rounds[0].player && rounds[0].totalScore() >= 100){
-    $("#controls").hide();
-    $("#endgame").show();
-    $("#victor").append("WE ARE SAVED! THE PLAYER WINS!");
-    $("#pregame").show();
+    $("#victor").html("WE ARE SAVED! THE PLAYER WINS!");
+    updateScore("humoscore")
   } else if (!rounds[0].player && rounds[0].totalScore() >= 100){
-    $("#controls").hide();
-    $("#endgame").show();
-    $("#victor").append("WE ARE DOOMED! THE EVIL ROBO-PIG HAS WON!");
-    $("#pregame").show();
+    $("#victor").html("WE ARE DOOMED! THE EVIL ROBO-PIG HAS WON!");
+    updateScore("roboscore");
   }
+}
+
+function updateScore(winner){
+  let x = parseInt(localStorage.getItem(winner));
+  x = x + 1;
+  localStorage.setItem(winner, x);
+  storeScore();
+  $("#controls").hide();
+  $("#endgame").show();
+  $("#pregame").show();
 }
 
 //the roundEnd function is INCOMPLETE. It runs either when a 1 is rolled, or when hold occurs. 
@@ -150,21 +157,32 @@ function aiGoal(){
 
 //The initialize function runs when the player wishes to start a new game.
 function initialize(){
+  rounds = [];
+  roundIndex = 0;
+  displayTurns(rounds);
+  $("#endgame").hide();
   $("#pregame").hide();
   $("#controls").show();
   rounds.unshift(new Round(true, [], "", 0, 0));
 }
 
 //The click function runs whenever either player rolls the dice.
+// TWO DICE: https://en.wikipedia.org/wiki/Pig_(dice_game)#Two-Dice_Pig
 function click(){
-  const face = rollD6();
-  displayFace(face);
-  rounds[0].rolls.push(face);
-  if (face === 1) {
-    roundEnd();
+  if (twoDice === true){
+    const faces = [rollD6(), rollD6()];
+    displayFace(faces[0], "#theFirstDie");
+    displayFace(faces[1], "#theSecondDie");
   } else {
-    rounds[0].round = rounds[0].round + face;
-    winCheck();
+    const face = rollD6();
+    displayFace(face, "#theFirstDie");
+    rounds[0].rolls.push(face);
+    if (face === 1) {
+      roundEnd();
+    } else {
+      rounds[0].round = rounds[0].round + face;
+      winCheck();
+    }
   } 
 }
 
@@ -180,7 +198,6 @@ function aiPlayer(){
   roundIndex++;
   rounds.unshift(new Round(false, [], "", 0, 0));
   const goal = aiGoal();
-  console.log(goal);
   do {
     click();
     if (rounds[0].round === 0){
@@ -199,11 +216,30 @@ function aiPlayer(){
 function cheatMode(){
   cheating = !cheating;
   if (cheating === true){
-    $("#theDie").css({'background-color':'#FFA340'});
+    $(".theDie").css({'background-color':'#FFA340'});
     $("#cheat").css({'background-color':'#FFA340'});
   } else {
-    $("#theDie").css({'background-color':'#FAFADA'});
+    $(".theDie").css({'background-color':'#FAFADA'});
     $("#cheat").css({'background-color':''});
+  }
+}
+
+function twoDicePig(){
+  if (roundIndex > 0){
+    const x = confirm("This will restart your game. Do you wish to continue?");
+    if (x === true){
+      initialize();
+      twoDicePig();
+    }
+  } else {
+    twoDice = !twoDice;
+    if (twoDice === true){
+      $("#theSecondDie").css({'display' : 'inline-block'});
+      $("#2die").css({'background-color':'#FFA340'});
+    } else {
+      $("#theSecondDie").hide();
+      $("#2die").css({'background-color':''});
+    }
   }
 }
 
@@ -211,7 +247,22 @@ function cheatMode(){
 //4. User Interface Logic
 //######
 
+function storeScore(){
+  if (localStorage.getItem("humoscore")){
+    $("#humoscore").html(localStorage.getItem("humoscore"));
+    $("#roboscore").html(localStorage.getItem("roboscore"));
+
+  } else {
+    localStorage.setItem("humoscore", "0");
+    localStorage.setItem("roboscore", "0");
+    $("#humoscore").html(localStorage.getItem("humoscore"));
+    $("#roboscore").html(localStorage.getItem("roboscore"));
+  }
+}
+
+
 $(document).ready(function() {
+  storeScore();
 
   $("#pregame").on("click", ".start",function() {
     initialize();
@@ -223,8 +274,11 @@ $(document).ready(function() {
     hold();
   });
 
-
   $("#options").on("click", "#cheat",function() {
     cheatMode();
+  });
+
+  $("#options").on("click", "#2die",function() {
+    twoDicePig();
   });
 });

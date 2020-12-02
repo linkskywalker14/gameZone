@@ -8,6 +8,10 @@ h1, h4 {
   text-align: center;
 }
 
+.title {
+  text-align: center;
+}
+
 table td{
   margin: 25px;
   padding: 25px;
@@ -23,13 +27,17 @@ table td{
 
 
 
-#theDie {
+.theDie {
   display: inline-block;
   background-color: #FAFADA;
   border: 2px solid #000000;
   border-radius: 5px;
   padding: 3px 5px 3px 5px;
   margin: 0;
+}
+
+#theSecondDie {
+  display: none;
 }
 
 .turnList {

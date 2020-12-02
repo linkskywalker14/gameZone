@@ -10,7 +10,12 @@
 </head>
 <body>
   <div class="container">
-    <h1>Pig Dice</h1>
+    <div class="title">
+      <img src="img/RoboPig.png" />
+      <h1>Pig Dice</h1>
+      <h4>Score</h4>
+      <p><strong>Human:</strong> <span id="humoscore">0</span> <strong>Robo Pig</strong> <span id="roboscore">0</span></p>
+    </div>
     <div class="row">
       <div class="col-md-2">
         <div class="optionContainer">
@@ -26,10 +31,13 @@
       </div>
       <div class="col-md-5">
         <div id="controls">
-          <button class="roll">ROLL THE D6</button>
-          <button class="hold">HOOOOOOLD</button>
+          <button class="roll">ROLL</button>
+          <button class="hold">HOLD</button>
           <br /><br />
-          <div id="theDie">
+          <div class="theDie" id="theFirstDie">
+            <span id="dieFace"><img src="img/pip.gif" /><img src="img/nopip.gif" /><img src="img/pip.gif" /><br/><img src="img/pip.gif" /><img src="img/nopip.gif" /><img src="img/pip.gif" /><br /><img src="img/pip.gif" /><img src="img/nopip.gif" /><img src="img/pip.gif" /></span>
+          </div>
+          <div class="theDie" id="theSecondDie">
             <span id="dieFace"><img src="img/pip.gif" /><img src="img/nopip.gif" /><img src="img/pip.gif" /><br/><img src="img/pip.gif" /><img src="img/nopip.gif" /><img src="img/pip.gif" /><br /><img src="img/pip.gif" /><img src="img/nopip.gif" /><img src="img/pip.gif" /></span>
           </div>
         </div>

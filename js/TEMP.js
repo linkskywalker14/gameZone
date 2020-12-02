@@ -54,7 +54,7 @@ function placeReal(position){
 function placeVis(position){
   console.log("The dingbat clicked the " + position + " place.");
   let move = $("#" + position);
-  move.append(player());
+  move.html(player());
 }
 
 $(document).ready(function() {
