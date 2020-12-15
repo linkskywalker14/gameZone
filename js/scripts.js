@@ -15,7 +15,7 @@ let rounds = [];
 let roundIndex = 0;
 let cheating = false;
 let twoDice = false;
-let aiNormal = true;
+let aiBad = false;
 
 //the Rounds constructor creates objects which contain all the variables necessary for each new round of the game.
 function Round(player, rolls, ending, round, total) {
@@ -163,11 +163,9 @@ function aiPlayer(){
   roundIndex++;
   rounds.unshift(new Round(false, [], "", 0, 0));
   let goal = aiGoal();
-  console.log(goal);
-  if (aiNormal === false){
+  if (aiBad === true){
     goal = goal + 7;
   }
-  console.log(goal);
   do {
     click();
     if (rounds[0].round === 0){
@@ -177,6 +175,7 @@ function aiPlayer(){
   if (rounds[0].round != 0){
     hold();
   }
+  $("#currentTotal").html("Human: " + rounds[1].total + "/100  |  RoboPig: " + rounds[0].total + "/100");
   displayTurns(rounds);
   roundIndex++;
   rounds.unshift(new Round(true, [], "", 0, 0));
@@ -221,7 +220,21 @@ function hold(){
 // PROBLEM: Probably sort this out into separate functions? It is getting unweildy!
 function click(){
   if (twoDice === true){
-    const faces = [rollD6(), rollD6()];
+    click2D();
+  } else {
+    click1D();
+  }
+  let ridingRolls = "";
+  rounds[0].rolls.forEach(function(x) {
+    ridingRolls += x + " + ";
+  });
+  ridingRolls += "?";
+  $("#currentRound").html(ridingRolls);
+
+}
+
+function click2D(){
+  const faces = [rollD6(), rollD6()];
     displayFace(faces[0], "#theFirstDie");
     displayFace(faces[1], "#theSecondDie");
     rounds[0].rolls.push(faces[0] + faces[1]);
@@ -240,17 +253,18 @@ function click(){
       rounds[0].round = rounds[0].round + faces[0] + faces[1];
       winCheck();
     }
+}
+
+function click1D(){
+  const face = rollD6();
+  displayFace(face, "#theFirstDie");
+  rounds[0].rolls.push(face);
+  if (face === 1) {
+    roundEnd();
   } else {
-    const face = rollD6();
-    displayFace(face, "#theFirstDie");
-    rounds[0].rolls.push(face);
-    if (face === 1) {
-      roundEnd();
-    } else {
-      rounds[0].round = rounds[0].round + face;
-      winCheck();
-    }
-  } 
+    rounds[0].round = rounds[0].round + face;
+    winCheck();
+  }
 }
 
 //######
@@ -281,26 +295,26 @@ function twoDicePig(){
     twoDice = !twoDice;
     if (twoDice === true){
       $("#theSecondDie").css({'display' : 'inline-block'});
+      $("#twoDiceRules").show();
+      $("#oneDiceRules").hide();
       $("#2die").css({'background-color':'#FFA340'});
     } else {
       $("#theSecondDie").hide();
+      $("#twoDiceRules").hide();
+      $("#oneDiceRules").show();
       $("#2die").css({'background-color':''});
     }
   }
 }
 
-//the setAiEasy function runs when the player clicks "AI Easy" on the options drop down menu.
-function setAiEasy(){
-  aiNormal = false;
-  $("#lvl1").css({'background-color':'#FFA340'});
-  $("#lvl2").css({'background-color':''});
-}
-
-//the setAiNormal function runs when the player clicks "AI Easy" on the options drop down menu.
-function setAiNormal(){
-  aiNormal = true;
-  $("#lvl1").css({'background-color':''});
-  $("#lvl2").css({'background-color':'#FFA340'});
+//the changeAILevel function runs when the player clicks "AI Easy" on the options drop down menu.
+function changeAILevel(){
+  aiBad = !aiBad;
+  if (aiBad === true){
+    $("#lvl").css({'background-color':'#FFA340'});
+  } else {
+    $("#lvl").css({'background-color':''});
+  }
 }
 
 //######
@@ -328,10 +342,7 @@ $(document).ready(function() {
   $("#options").on("click", "#2die",function() {
     twoDicePig();
   });
-  $("#options").on("click", "#lvl1",function() {
-    setAiEasy();
-  });
-  $("#options").on("click", "#lvl2",function() {
-    setAiNormal();
+  $("#options").on("click", "#lvl",function() {
+    changeAILevel();
   });
 });

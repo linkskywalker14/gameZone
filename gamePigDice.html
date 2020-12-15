@@ -21,11 +21,19 @@
         <div class="optionContainer">
           Options
           <div id="options">
-            <p class="item" id="cheat">Cheat</p>
-            <p class="item" id="2die">Two Dice (not implemented)</p>
-            <p class="item" id="lvl1">AI Easy (not implemented)</p>
-            <p class="item" id="lvl2">AI Normal (not implemented)</p>
-            <p class="item" id="noAI">Human v. Human (not implemented)</p>
+            <p class="item" id="2die">Play With Two Dice</p>
+            <p class="item" id="noAI">Play Human v. Human (not implemented)</p>
+            <p class="item" id="cheat">Toggle Loaded Dice</p>
+            <p class="item" id="lvl">Toggle Easy AI</p>
+          </div>
+        </div>
+        <div id="rules">
+          Rules
+          <div id="oneDiceRules">
+            The Rules for the basic game.
+          </div>
+          <div id="twoDiceRules">
+            The rules for the two dice game.
           </div>
         </div>
       </div>
@@ -40,6 +48,10 @@
           <div class="theDie" id="theSecondDie">
             <span id="dieFace"><img src="img/pip.gif" /><img src="img/nopip.gif" /><img src="img/pip.gif" /><br/><img src="img/pip.gif" /><img src="img/nopip.gif" /><img src="img/pip.gif" /><br /><img src="img/pip.gif" /><img src="img/nopip.gif" /><img src="img/pip.gif" /></span>
           </div>
+          <div>
+            <h4><span id="currentTotal"></span></h4>
+            <h1><span id="currentRound"></span></h1>
+          </div>
         </div>
         <div id="endgame">
           <span id="victor"></span>
@@ -49,7 +61,7 @@
         </div>
       </div>
       <div class="col-md-5">
-        <h4>Results:</h4>
+        <h4>Turn Record:</h4>
         <ul id="turns">
         </ul>
       </div>

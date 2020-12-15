@@ -40,6 +40,10 @@ table td{
   display: none;
 }
 
+#twoDiceRules {
+  display: none;
+}
+
 .turnList {
   list-style-type: none;
   text-indent: -25px;
@@ -47,12 +51,11 @@ table td{
 }
 
 #trueturn {
-  background-color: #9CFDFF;
+  background-color: #ff7ad7;
 }
 
 #falseturn {
-  background-color: #A60098;
-  color: white;
+  background-color: #ffa2c6;
 }
 
 /*Styling for the Results section of both the Loop and RegEx pages*/
@@ -90,10 +93,6 @@ table td{
   min-width: 200px;
   box-shadow: 0px 10px 25px 0px rgba(95, 0, 24, 0.562);
   z-index: 1;
-}
-
-#lvl2 {
-  background-color: #FFA340;
 }
 
 .optionContainer:hover #options {
