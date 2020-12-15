@@ -92,6 +92,10 @@ table td{
   z-index: 1;
 }
 
+#lvl2 {
+  background-color: #FFA340;
+}
+
 .optionContainer:hover #options {
   display: block;
 }
