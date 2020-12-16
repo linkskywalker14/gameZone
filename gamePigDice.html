@@ -10,16 +10,10 @@
 </head>
 <body>
   <div class="container">
-    <div class="title">
-      <img src="img/RoboPig.png" />
-      <h1>Pig Dice</h1>
-      <h4>Score</h4>
-      <p><strong>Human:</strong> <span id="humoscore">0</span> <strong>Robo Pig</strong> <span id="roboscore">0</span></p>
-    </div>
     <div class="row">
-      <div class="col-md-2">
+      <div class="col-md-3">
         <div class="optionContainer">
-          Options
+          Options  |  
           <div id="options">
             <p class="item" id="2die">Play With Two Dice</p>
             <p class="item" id="noAI">Play Human v. Human (not implemented)</p>
@@ -27,18 +21,45 @@
             <p class="item" id="lvl">Toggle Easy AI</p>
           </div>
         </div>
-        <div id="rules">
+        <div id="rulesContainer">
           Rules
-          <div id="oneDiceRules">
-            The Rules for the basic game.
+          <div id="rules">
+            <div id="oneDiceRules">
+              <p class="droptext">Each turn, a player repeatedly rolls the die until either a 1 is rolled, or the player chooses to "hold."</p>
+              <ul>
+                <li class="droptext">If the player rolls a 1, they score nothing and it becomes the next player's turn.</li>
+                <li class="droptext">If the player rolls any other number, it is added to their turn total and the player's turn continues.</li>
+                <li class="droptext">If a player chooses to "hold", their turn total is added to their score, and it becomes the next player's turn.</li>
+              </ul>
+              <p class="droptext">The first player to score 100 or more points wins.</p>
+            </div>
+            <div id="twoDiceRules">
+              <p class="droptext">Each turn, a player repeatedly rolls two dice until either a 1 is rolled, or the player chooses to "hold."</p>
+              <ul>
+                <li class="droptext">If the player rolls a single 1, they score nothing and it becomes the next player's turn.</li>
+                <li class="droptext">If the player rolls double 1s, their total score is reset to 0, and it becomes the next player's turn.</li>
+                <li class="droptext">If the player rolls any other numbers, the sum of their faces is added to the turn total, and the player's turn continues.</li>
+                <li class="droptext">If the player rolls doubles of any other number, they are obligated to roll again before being allowed to hold.</li>
+                <li class="droptext">If a player chooses to "hold", their turn total is added to their score, and it becomes the next player's turn.</li>
+              </ul>
+              <p class="droptext">The first player to score 100 or more points wins.</p>
+            </div>
           </div>
-          <div id="twoDiceRules">
-            The rules for the two dice game.
-          </div>
+         </div> 
+      </div>
+      <div class="col-md-6">
+        <div class="title">
+          <img src="img/RoboPig.png" />
+          <h1>Pig Dice</h1>
+          <p><strong>Human:</strong> <span id="humoscore">0</span> <strong>Robo Pig</strong> <span id="roboscore">0</span></p>
         </div>
       </div>
-      <div class="col-md-5">
-        <div id="controls">
+    </div>
+    <div class="col-md-3"></div>
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-4">
+        <div id="controls" class="title">
           <button class="roll">ROLL</button>
           <button class="hold">HOLD</button>
           <br /><br />
@@ -49,7 +70,8 @@
             <span id="dieFace"><img src="img/pip.gif" /><img src="img/nopip.gif" /><img src="img/pip.gif" /><br/><img src="img/pip.gif" /><img src="img/nopip.gif" /><img src="img/pip.gif" /><br /><img src="img/pip.gif" /><img src="img/nopip.gif" /><img src="img/pip.gif" /></span>
           </div>
           <div>
-            <h4><span id="currentTotal"></span></h4>
+            <br />
+            <h6><span id="currentTotal"></span></h6>
             <h1><span id="currentRound"></span></h1>
           </div>
         </div>
@@ -60,11 +82,12 @@
           <button class="start">Challenge the EVIL ROBO-PIG!</button>
         </div>
       </div>
-      <div class="col-md-5">
+      <div class="col-md-4">
         <h4>Turn Record:</h4>
         <ul id="turns">
         </ul>
       </div>
+      <div class="col-md-2"></div>
     </div>
   </div>
 </body>

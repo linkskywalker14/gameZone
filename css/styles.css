@@ -71,9 +71,12 @@ table td{
 
 /*Should defs be discarded*/
 
-.item {
+.item, .droptext {
   padding: 5px 16px;
   margin: 0px;
+}
+
+.item {
   font-weight: bold;
 }
 
@@ -86,11 +89,27 @@ table td{
   display: inline-block;
 }
 
+#rulesContainer {
+  position: relative;
+  display: inline-block;
+}
+
+#rules {
+  min-width: 500px;
+}
+
 #options {
+  min-width: 200px;
+}
+
+#rulesContainer:hover #rules {
+  display: block;
+}
+
+#options, #rules {
   display: none;
   position: absolute;
   background-color: #B851A3;
-  min-width: 200px;
   box-shadow: 0px 10px 25px 0px rgba(95, 0, 24, 0.562);
   z-index: 1;
 }

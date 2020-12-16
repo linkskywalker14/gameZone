@@ -245,9 +245,8 @@ function click2D(){
     } else if (faces[0] === 1 || faces[1] === 1) {
       roundEnd();
     } else if (faces[0] === faces[1]) {
-      console.log("Doubles got rolled");
-      alert("D-D-DOUBLE! You rolled two " + faces[0] + "s, and are obligated to roll again!");
       rounds[0].round = rounds[0].round + faces[0] + faces[1];
+      rounds[0].rolls.push("Double! Roll again.");
       click();
     } else {
       rounds[0].round = rounds[0].round + faces[0] + faces[1];
