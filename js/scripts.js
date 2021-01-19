@@ -13,9 +13,14 @@
 
 let rounds = [];
 let roundIndex = 0;
-let cheating = false;
-let twoDice = false;
-let aiBad = false;
+
+function Settings(cheating, twoDice, aiBad) {
+  this.cheating = cheating;
+  this.twoDice = twoDice;
+  this.aiBad = aiBad;
+}
+
+let setting = new Settings(false,false,false);
 
 //the Rounds constructor creates objects which contain all the variables necessary for each new round of the game.
 function Round(player, rolls, ending, round, total) {
@@ -51,7 +56,7 @@ Round.prototype.totalScore = function(snake){
 
 //the rollD6 function is called when either player rolls the die. It returns a value between 1 and 6. If cheating is active, the number is weighted.
 function rollD6(){
-  if (cheating === true){
+  if (setting.cheating === true){
     const loadedD6 = [1, 2, 3, 4, 4, 5, 6, 6];
     const x = parseInt(Math.random() * 8 + 0);
     return loadedD6[x];
@@ -163,7 +168,7 @@ function aiPlayer(){
   roundIndex++;
   rounds.unshift(new Round(false, [], "", 0, 0));
   let goal = aiGoal();
-  if (aiBad === true){
+  if (setting.aiBad === true){
     goal = goal + 7;
   }
   do {
@@ -219,7 +224,7 @@ function hold(){
 // TWO DICE: https://en.wikipedia.org/wiki/Pig_(dice_game)#Two-Dice_Pig
 // PROBLEM: Probably sort this out into separate functions? It is getting unweildy!
 function click(){
-  if (twoDice === true){
+  if (setting.twoDice === true){
     click2D();
   } else {
     click1D();
@@ -272,8 +277,8 @@ function click1D(){
 
 //the cheatMode function runs when the player clicks "Cheat" on the options drop down menu.
 function cheatMode(){
-  cheating = !cheating;
-  if (cheating === true){
+  setting.cheating = !setting.cheating;
+  if (setting.cheating === true){
     $(".theDie").css({'background-color':'#FFA340'});
     $("#cheat").css({'background-color':'#FFA340'});
   } else {
@@ -291,8 +296,8 @@ function twoDicePig(){
       twoDicePig();
     }
   } else {
-    twoDice = !twoDice;
-    if (twoDice === true){
+    setting.twoDice = !setting.twoDice;
+    if (setting.twoDice === true){
       $("#theSecondDie").css({'display' : 'inline-block'});
       $("#twoDiceRules").show();
       $("#oneDiceRules").hide();
@@ -308,8 +313,8 @@ function twoDicePig(){
 
 //the changeAILevel function runs when the player clicks "AI Easy" on the options drop down menu.
 function changeAILevel(){
-  aiBad = !aiBad;
-  if (aiBad === true){
+  setting.aiBad = !setting.aiBad;
+  if (setting.aiBad === true){
     $("#lvl").css({'background-color':'#FFA340'});
   } else {
     $("#lvl").css({'background-color':''});

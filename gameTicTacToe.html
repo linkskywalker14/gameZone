@@ -9,24 +9,60 @@
   <meta charset="utf-8"/>
 </head>
 <body>
-  <center>
-  <table id="game">
-    <tr class="tictachorizontal">
-      <td id="NW"></td>
-      <td id="NC" class="tictacvertical"></td>
-      <td id="NE" class="tictacvertical"></td>
-    </tr>
-    <tr class="tictachorizontal">
-      <td id="CW"></td>
-      <td id="CC" class="tictacvertical"></td>
-      <td id="CE" class="tictacvertical"></td>
-    </tr>
-    <tr>
-      <td id="SW"></td>
-      <td id="SC" class="tictacvertical"></td>
-      <td id="SE" class="tictacvertical"></td>
-    </tr>
-  </table>
-</center>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="optionContainer">
+          Options
+          <div id="options">
+            <p class="item" id="easyAI">Toggle Easy AI Player</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="title">
+          <img src="img/xo.png" />
+          <h1><span id="ticTacTurn">X goes first</span></h1>
+          <br />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3"></div>
+    <div class="row">
+      <div class="col-md-4"></div>
+      <div class="col-md-4">
+        <center>
+          <table id="game">
+            <tr class="tictachorizontal">
+              <td id="NW"></td>
+              <td id="NC" class="tictacvertical"></td>
+              <td id="NE" class="tictacvertical"></td>
+            </tr>
+            <tr class="tictachorizontal">
+              <td id="CW"></td>
+              <td id="CC" class="tictacvertical"></td>
+              <td id="CE" class="tictacvertical"></td>
+            </tr>
+            <tr>
+              <td id="SW"></td>
+              <td id="SC" class="tictacvertical"></td>
+              <td id="SE" class="tictacvertical"></td>
+            </tr>
+          </table>
+        </center>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+      <div class="col-md-4"></div>
+      <div class="col-md-4">
+        <center>
+          <br />
+          <p><strong>X:</strong> <span id="humoscore">0</span> <strong>O:</strong> <span id="roboscore">0</span></p>
+        </center>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+  </div>
 </body>
 </html>
