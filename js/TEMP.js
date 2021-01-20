@@ -1,12 +1,13 @@
-function Board(toprow, midrow, botrow, won, dude) {
+function Board(toprow, midrow, botrow, won, ai, dude) {
   this.toprow = toprow;
   this.midrow = midrow;
   this.botrow = botrow;
   this.won = won;
+  this.ai = ai;  //0 is human v human, 1 is random, 2 has some strategy?
   this.dude = dude;
 }
 
-let game1 = new Board ([],[],[], false, "X");
+let game1 = new Board ([],[],[], false, 0, "X");
 
 function player(){
   if (game1.dude === "X"){
@@ -155,47 +156,173 @@ function maybeplace(position){
   if (game1.won === false){
     placeReal(position);
     placeVis(position);
+    if (1 <= game1.ai){
+      aiMove();
+    }
 
   } else {
     console.log("The game is over. I'm not gonna do shit.");
   }  
 }
 
+
+//WARNING: Gotta have a way to turn this off! Some kinda internal failsafe. 
+function aiMove(){
+  if (9 === game1.toprow.length + game1.midrow.length + game1.botrow.length){
+    console.log("All spaces are filled up, dingus!");
+  } else {
+    const pos = [parseInt(Math.random() * 3 + 0), parseInt(Math.random() * 3 + 0)]
+    switch (pos[0]){
+      case 0:
+        console.log("Top row, " + pos[1] + " position is " + game1.toprow[pos[1]]);
+        if (game1.toprow[pos[1]] === undefined){
+          aiPlace(pos);
+        } else {
+          aiMove();
+        }
+        break;
+      case 1:
+        console.log("Middle row, " + pos[1] + " position is " + game1.midrow[pos[1]]);
+        if (game1.midrow[pos[1]] === undefined){
+          aiPlace(pos);
+        } else {
+          aiMove();
+        } 
+        break;
+      case 2:
+        console.log("Bottom row, " + pos[1] + " position is " + game1.botrow[pos[1]]);
+        if (game1.botrow[pos[1]] === undefined){
+          aiPlace(pos);
+        } else {
+          aiMove();
+        }  
+        break;
+      default:
+        console.log("AI placement error!");
+    }
+  }
+}
+
+function aiPlace(pos){
+  console.log("I got there! Row: " + pos[0] + " & Col: " + pos[1]);
+  switch (pos[0]){
+    case 0:
+      switch (pos[1]){
+        case 0:
+          maybeplace("NW");
+          break;
+        case 1:
+          maybeplace("NC");
+          break;
+        case 2:
+          maybeplace("NE");
+          break;
+      }
+      break;
+    case 1:
+      switch (pos[1]){
+        case 0:
+          maybeplace("CW");
+          break;
+        case 1:
+          maybeplace("CC");
+          break;
+        case 2:
+          maybeplace("CE");
+          break;
+      }
+      break;
+    case 2:
+      switch (pos[1]){
+        case 0:
+          maybeplace("SW");
+          break;
+        case 1:
+          maybeplace("SC");
+          break;
+        case 2:
+          maybeplace("SE");
+          break;
+      }
+      break;
+  }
+}
+
+
+
+function aiPlayer(level){
+  //
+  //Eventually this code will be used to ensure the AI is turned on at the start of a match.
+  //
+  //if (1 <= game1.toprow.length + game1.midrow.length + game1.botrow.length){
+  //  const x = confirm("This will restart your game. Do you wish to continue?");
+  //  if (x === true){
+  //    
+  //  }
+  //}
+  if (level === game1.ai){
+    game1.ai = 0;
+    $("#easyAI").css({'background-color':''});
+    $("#hardAI").css({'background-color':''});
+  } else if (level === 1){
+    game1.ai = 1;
+    $("#easyAI").css({'background-color':'#FFA340'});
+    $("#hardAI").css({'background-color':''});
+  } else if (level === 2){
+    game1.ai = 2;
+    $("#hardAI").css({'background-color':'#FFA340'});
+    $("#easyAI").css({'background-color':''});
+  }
+}
+
 $(document).ready(function() {
-    $("#game").on("click", "#NW",function() {
-      const position = "NW";
-      maybeplace(position);
-    }); 
-    $("#game").on("click", "#NC",function() {
-      const position = "NC";
-      maybeplace(position);
-    }); 
-    $("#game").on("click", "#NE",function() {
-      const position = "NE";
-      maybeplace(position);
-    }); 
-    $("#game").on("click", "#CW",function() {
-      const position = "CW";
-      maybeplace(position);
-    }); 
-    $("#game").on("click", "#CC",function() {
-      const position = "CC";
-      maybeplace(position);
-    }); 
-    $("#game").on("click", "#CE",function() {
-      const position = "CE";
-      maybeplace(position);
-    }); 
-    $("#game").on("click", "#SW",function() {
-      const position = "SW";
-      maybeplace(position);
-    }); 
-    $("#game").on("click", "#SC",function() {
-      const position = "SC";
-      maybeplace(position);
-    }); 
-    $("#game").on("click", "#SE",function() {
-      const position = "SE";
-      maybeplace(position);
-    });
+
+//Attaching listeners to each space on the Tic Tac Toe board.
+
+  $("#game").on("click", "#NW",function() {
+    const position = "NW";
+    maybeplace(position);
+  }); 
+  $("#game").on("click", "#NC",function() {
+    const position = "NC";
+    maybeplace(position);
+  }); 
+  $("#game").on("click", "#NE",function() {
+    const position = "NE";
+    maybeplace(position);
+  }); 
+  $("#game").on("click", "#CW",function() {
+    const position = "CW";
+    maybeplace(position);
+  }); 
+  $("#game").on("click", "#CC",function() {
+    const position = "CC";
+    maybeplace(position);
+  }); 
+  $("#game").on("click", "#CE",function() {
+    const position = "CE";
+    maybeplace(position);
+  }); 
+  $("#game").on("click", "#SW",function() {
+    const position = "SW";
+    maybeplace(position);
+  }); 
+  $("#game").on("click", "#SC",function() {
+    const position = "SC";
+    maybeplace(position);
+  }); 
+  $("#game").on("click", "#SE",function() {
+    const position = "SE";
+    maybeplace(position);
+  });
+
+//Attaching listeners to the options menu.
+  $("#options").on("click", "#easyAI",function() {
+    aiPlayer(1);
+  });
+  $("#options").on("click", "#hardAI",function() {
+    aiPlayer(2);
+  });
+
+
 });
