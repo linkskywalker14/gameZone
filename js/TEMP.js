@@ -79,7 +79,6 @@ function placeReal(position){
 }
 
 function findHWin(row){
-  //Is it possible to have a loop or something inside an if statement? To make this scale?
   if (row[0] === row[1] && row[0] === row[2]){
     console.log("AN H WIN HAS BEEN DISCOVERED!");
     game1.won = true;
@@ -141,7 +140,6 @@ function findDWin(){
   }
 }
 
-
 function placeVis(position){
   let move = $("#" + position);
   const currentDude = player();
@@ -149,6 +147,7 @@ function placeVis(position){
   if (game1.won === true){
     console.log(currentDude);
     $("#ticTacTurn").html(currentDude + " has won!");
+    updateScore(currentDude.toLowerCase() + "score");
   }
 }
 
@@ -159,14 +158,20 @@ function maybeplace(position){
     if (1 <= game1.ai){
       aiMove();
     }
-
   } else {
     console.log("The game is over. I'm not gonna do shit.");
   }  
 }
 
+function maybeaiplace(position){
+  if (game1.won === false){
+    placeReal(position);
+    placeVis(position);
+  } else {
+    console.log("The game is over. I'm not gonna do shit.");
+  }  
+}
 
-//WARNING: Gotta have a way to turn this off! Some kinda internal failsafe. 
 function aiMove(){
   if (9 === game1.toprow.length + game1.midrow.length + game1.botrow.length){
     console.log("All spaces are filled up, dingus!");
@@ -209,43 +214,63 @@ function aiPlace(pos){
     case 0:
       switch (pos[1]){
         case 0:
-          maybeplace("NW");
+          maybeaiplace("NW");
           break;
         case 1:
-          maybeplace("NC");
+          maybeaiplace("NC");
           break;
         case 2:
-          maybeplace("NE");
+          maybeaiplace("NE");
           break;
       }
       break;
     case 1:
       switch (pos[1]){
         case 0:
-          maybeplace("CW");
+          maybeaiplace("CW");
           break;
         case 1:
-          maybeplace("CC");
+          maybeaiplace("CC");
           break;
         case 2:
-          maybeplace("CE");
+          maybeaiplace("CE");
           break;
       }
       break;
     case 2:
       switch (pos[1]){
         case 0:
-          maybeplace("SW");
+          maybeaiplace("SW");
           break;
         case 1:
-          maybeplace("SC");
+          maybeaiplace("SC");
           break;
         case 2:
-          maybeplace("SE");
+          maybeaiplace("SE");
           break;
       }
       break;
   }
+}
+
+function storeScore(){
+  if (localStorage.getItem("xscore")){
+    $("#xscore").html(localStorage.getItem("xscore"));
+    $("#oscore").html(localStorage.getItem("oscore"));
+
+  } else {
+    localStorage.setItem("xscore", "0");
+    localStorage.setItem("oscore", "0");
+    $("#xscore").html(localStorage.getItem("xscore"));
+    $("#oscore").html(localStorage.getItem("oscore"));
+  }
+}
+
+function updateScore(winner){
+  let x = parseInt(localStorage.getItem(winner));
+  x = x + 1;
+  localStorage.setItem(winner, x);
+  storeScore();
 }
 
 
@@ -276,6 +301,8 @@ function aiPlayer(level){
 }
 
 $(document).ready(function() {
+  
+  storeScore();
 
 //Attaching listeners to each space on the Tic Tac Toe board.
 

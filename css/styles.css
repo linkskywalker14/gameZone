@@ -83,6 +83,11 @@ table td{
   font-weight: bold;
 }
 
+.item a:link, .item a:visited, .item a:hover, .item a:active {
+  color: black;
+  text-decoration: none;
+}
+
 .item:hover {
   background-color: #E38DD1;
 }
@@ -92,24 +97,15 @@ table td{
   display: inline-block;
 }
 
-#rulesContainer {
-  position: relative;
-  display: inline-block;
-}
-
 #rules {
   min-width: 500px;
 }
 
-#options {
+#options, #navigation {
   min-width: 200px;
 }
 
-#rulesContainer:hover #rules {
-  display: block;
-}
-
-#options, #rules {
+#options, #rules, #navigation {
   display: none;
   position: absolute;
   background-color: #B851A3;
@@ -117,6 +113,28 @@ table td{
   z-index: 1;
 }
 
-.optionContainer:hover #options {
+.optionContainer:hover #options, .optionContainer:hover #navigation, .optionContainer:hover #rules {
   display: block;
 }
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+#mainNav {
+  font-size: 30px;
+  list-style-type: square;
+}
+
+#mainNav a:link, #mainNav a:visited {
+  color: #9666D3;
+}
+
+/*I'd like to have it so the pinball image changes to display the image for whichever game you're hovering your cursor over, but I think I need JS for that.*/
+
+#mainNav a:hover, #mainNav a:active {
+  color: #00CDFA;
+  text-decoration: none;
+}
+
