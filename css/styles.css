@@ -43,6 +43,10 @@ table td{
   display: none;
 }
 
+#playAgain {
+  display: none;
+}
+
 #twoDiceRules {
   display: none;
 }

@@ -9,6 +9,14 @@ function Board(toprow, midrow, botrow, won, ai, dude) {
 
 let game1 = new Board ([],[],[], false, 0, "X");
 
+function newRound(ai) {
+  //I should be able to pass the AI into this function later!
+  $("#playAgain").hide();
+  game1 = new Board ([],[],[], false, ai, "X");
+  $("#NW, #NC, #NE, #CW, #CC, #CE, #SE, #SC, #SW").html("");
+  $("#NW, #NC, #NE, #CW, #CC, #CE, #SE, #SC, #SW").css({'background-color':''});
+}
+
 function player(){
   if (game1.dude === "X"){
     game1.dude = "O";
@@ -82,6 +90,7 @@ function findHWin(row){
   if (row[0] === row[1] && row[0] === row[2]){
     console.log("AN H WIN HAS BEEN DISCOVERED!");
     game1.won = true;
+    $("#playAgain").show();
     switch (row){
       case game1.toprow:
         $("#NW, #NC, #NE").css({'background-color':'red'});
@@ -104,6 +113,7 @@ function findVWin(line){
   if (game1.toprow[line] === game1.midrow[line] && game1.toprow[line] === game1.botrow[line]){
     console.log("A V WIN HAS BEEN DISCOVERED!");
     game1.won = true;
+    $("#playAgain").show();
     switch (line){
       case 0:
         $("#NW, #CW, #SW").css({'background-color':'red'});
@@ -128,10 +138,12 @@ function findDWin(){
       console.log("A D WIN HAS BEEN DISCOVERED!");
       $("#NW, #CC, #SE").css({'background-color':'red'});
       game1.won = true;
+      $("#playAgain").show();
     } else if (game1.midrow[1] === game1.toprow[2] && game1.midrow[1] === game1.botrow[0]){
       console.log("A D WIN HAS BEEN DISCOVERED!");
       $("#NE, #CC, #SW").css({'background-color':'red'});
       game1.won = true;
+      $("#playAgain").show();
     } else {
       console.log("no d win yet, center taken tho");
     }
@@ -151,16 +163,88 @@ function placeVis(position){
   }
 }
 
+function openSpaceCheck(position){
+  switch(position){
+    case "NW":
+      if (game1.toprow[0] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "NC":
+      if (game1.toprow[1] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "NE":
+      if (game1.toprow[2] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "CW":
+      if (game1.midrow[0] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "CC":
+      if (game1.midrow[1] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "CE":
+      if (game1.midrow[2] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "SW":
+      if (game1.botrow[0] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "SC":
+      if (game1.botrow[1] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "SE":
+      if (game1.botrow[2] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    default:
+      return false;
+  }
+}
+
 function maybeplace(position){
-  if (game1.won === false){
-    placeReal(position);
-    placeVis(position);
-    if (1 <= game1.ai){
-      aiMove();
+  if (openSpaceCheck(position)){
+    if (game1.won === false){
+      placeReal(position);
+      placeVis(position);
+      if (1 <= game1.ai){
+        aiMove();
+      }
+    } else {
+      console.log("The game is over. I'm not gonna do shit.");
     }
-  } else {
-    console.log("The game is over. I'm not gonna do shit.");
-  }  
+  }    
 }
 
 function maybeaiplace(position){
@@ -273,18 +357,18 @@ function updateScore(winner){
   storeScore();
 }
 
-
+function gameInProgressCheck(level){
+  if (1 <= game1.toprow.length + game1.midrow.length + game1.botrow.length){
+    if (confirm("This will restart your game. Do you wish to continue?")){
+      aiPlayer(level);
+      newRound(game1.ai);
+    }
+  } else {
+    aiPlayer(level);
+  }
+}
 
 function aiPlayer(level){
-  //
-  //Eventually this code will be used to ensure the AI is turned on at the start of a match.
-  //
-  //if (1 <= game1.toprow.length + game1.midrow.length + game1.botrow.length){
-  //  const x = confirm("This will restart your game. Do you wish to continue?");
-  //  if (x === true){
-  //    
-  //  }
-  //}
   if (level === game1.ai){
     game1.ai = 0;
     $("#easyAI").css({'background-color':''});
@@ -345,11 +429,15 @@ $(document).ready(function() {
 
 //Attaching listeners to the options menu.
   $("#options").on("click", "#easyAI",function() {
-    aiPlayer(1);
+    gameInProgressCheck(1);
   });
   $("#options").on("click", "#hardAI",function() {
-    aiPlayer(2);
+    gameInProgressCheck(2);
   });
 
+//One last listener!
+$("#playAgain").on("click", ".start",function() {
+  newRound(game1.ai);
+});  
 
 });
