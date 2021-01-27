@@ -238,13 +238,42 @@ function maybeplace(position){
     if (game1.won === false){
       placeReal(position);
       placeVis(position);
-      if (1 <= game1.ai){
+      if (1 === game1.ai){
         aiMove();
+      } else if (2 >= game1.ai){
+        blockCheck();
       }
     } else {
       console.log("The game is over. I'm not gonna do shit.");
     }
   }    
+}
+
+
+
+//SO: This works insofar as it will find and block a line. 
+//BUT: Once it does so, it gets stuck trying to do the same move forever, and the player winds up taking the O turn.
+function blockCheck(){
+  const rowTest = game1.toprow.filter(element => element === "X");
+  if (rowTest.length === 2){
+    const place = game1.toprow.findIndex(empty => empty != "X");
+    switch (place){
+      case 0:
+        maybeaiplace("NW");
+        break;
+      case 1:
+        maybeaiplace("NC");
+        break;
+      case -1:
+        maybeaiplace("NE");
+        break;
+      default:
+        console.log("Something broke!");
+        break;
+    }
+  } else {
+    aiMove();
+  }
 }
 
 function maybeaiplace(position){
