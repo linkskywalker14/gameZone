@@ -238,9 +238,10 @@ function maybeplace(position){
     if (game1.won === false){
       placeReal(position);
       placeVis(position);
-      if (1 === game1.ai){
+      console.log("game1.ai is currently set to: " + game1.ai);
+      if (game1.ai === 1){
         aiMove();
-      } else if (2 >= game1.ai){
+      } else if (game1.ai === 2){
         blockCheck();
       }
     } else {
@@ -254,8 +255,11 @@ function maybeplace(position){
 //SO: This works insofar as it will find and block a line. 
 //BUT: Once it does so, it gets stuck trying to do the same move forever, and the player winds up taking the O turn.
 function blockCheck(){
-  const rowTest = game1.toprow.filter(element => element === "X");
-  if (rowTest.length === 2){
+  const tRowTest = game1.toprow.filter(element => element === "X");
+  const mRowTest = game1.midrow.filter(element => element === "X");
+  const bRowTest = game1.botrow.filter(element => element === "X");
+  if (tRowTest.length === 2 && !game1.toprow.includes("O")){
+    console.log("NOT SO FAST, HUMAN! I WILL BLOCK YOUR ATTEMPT TO WIN!");
     const place = game1.toprow.findIndex(empty => empty != "X");
     switch (place){
       case 0:
@@ -266,6 +270,40 @@ function blockCheck(){
         break;
       case -1:
         maybeaiplace("NE");
+        break;
+      default:
+        console.log("Something broke!");
+        break;
+    }
+  } else if (mRowTest.length === 2 && !game1.midrow.includes("O")){
+    console.log("NOT SO FAST, HUMAN! I WILL BLOCK YOUR ATTEMPT TO WIN!");
+    const place = game1.midrow.findIndex(empty => empty != "X");
+    switch (place){
+      case 0:
+        maybeaiplace("CW");
+        break;
+      case 1:
+        maybeaiplace("CC");
+        break;
+      case -1:
+        maybeaiplace("CE");
+        break;
+      default:
+        console.log("Something broke!");
+        break;
+    }
+  } else if (bRowTest.length === 2 && !game1.botrow.includes("O")) {
+    console.log("NOT SO FAST, HUMAN! I WILL BLOCK YOUR ATTEMPT TO WIN!");
+    const place = game1.botrow.findIndex(empty => empty != "X");
+    switch (place){
+      case 0:
+        maybeaiplace("SW");
+        break;
+      case 1:
+        maybeaiplace("SC");
+        break;
+      case -1:
+        maybeaiplace("SE");
         break;
       default:
         console.log("Something broke!");
