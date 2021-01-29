@@ -10,11 +10,11 @@ function Board(toprow, midrow, botrow, won, ai, dude) {
 let game1 = new Board ([],[],[], false, 0, "X");
 
 function newRound(ai) {
-  //I should be able to pass the AI into this function later!
   $("#playAgain").hide();
   game1 = new Board ([],[],[], false, ai, "X");
   $("#NW, #NC, #NE, #CW, #CC, #CE, #SE, #SC, #SW").html("");
   $("#NW, #NC, #NE, #CW, #CC, #CE, #SE, #SC, #SW").css({'background-color':''});
+  $("#ticTacTurn").html("X goes first");
 }
 
 function player(){
@@ -160,6 +160,10 @@ function placeVis(position){
     console.log(currentDude);
     $("#ticTacTurn").html(currentDude + " has won!");
     updateScore(currentDude.toLowerCase() + "score");
+  } else if (game1.toprow.length + game1.midrow.length + game1.botrow.length === 9 && !game1.toprow.includes(undefined) && !game1.midrow.includes(undefined) && !game1.botrow.includes(undefined)){
+    $("#ticTacTurn").html("Draw");
+    game1.won = true;
+    $("#playAgain").show();
   }
 }
 
@@ -242,7 +246,7 @@ function maybeplace(position){
       if (game1.ai === 1){
         aiMove();
       } else if (game1.ai === 2){
-        blockCheck();
+        hBlockCheck();
       }
     } else {
       console.log("The game is over. I'm not gonna do shit.");
@@ -250,11 +254,77 @@ function maybeplace(position){
   }    
 }
 
+function vBlockCheck(){
+  const wColumn = [game1.toprow[0], game1.midrow[0], game1.botrow[0]];
+  const cColumn = [game1.toprow[1], game1.midrow[1], game1.botrow[1]];
+  const eColumn = [game1.toprow[2], game1.midrow[2], game1.botrow[2]];
+  const wColumnTest = wColumn.filter(element => element === "X");
+  const cColumnTest = cColumn.filter(element => element === "X");
+  const eColumnTest = eColumn.filter(element => element === "X");
+  console.log("W column is " + wColumn + " wColumnTest is " + wColumnTest);
+  console.log("C column is " + cColumn + " cColumnTest is " + cColumnTest);
+  console.log("E column is " + eColumn + " eColumnTest is " + eColumnTest);
 
+  if (wColumnTest.length === 2 && !wColumn.includes("O")){
+    console.log("Thought you could trick me horizontally?");
+    const place = game1.toprow.findIndex(empty => empty != "X");
+    switch (place){
+      case 0:
+        maybeaiplace("NW");
+        break;
+      case 1:
+        maybeaiplace("CW");
+        break;
+      case -1:
+        maybeaiplace("SW");
+        break;
+      default:
+        console.log("Something broke!");
+        break;
+    }
+  } else if (cColumnTest.length === 2 && !cColumn.includes("O")){
+    console.log("Thought you could trick me horizontally?");
+    const place = game1.midrow.findIndex(empty => empty != "X");
+    switch (place){
+      case 0:
+        maybeaiplace("NC");
+        break;
+      case 1:
+        maybeaiplace("CC");
+        break;
+      case -1:
+        maybeaiplace("SC");
+        break;
+      default:
+        console.log("Something broke!");
+        break;
+    }
+  } else if (eColumnTest.length === 2 && !eColumn.includes("O")) {
+    console.log("Thought you could trick me horizontally?");
+    const place = game1.botrow.findIndex(empty => empty != "X");
+    switch (place){
+      case 0:
+        maybeaiplace("NE");
+        break;
+      case 1:
+        maybeaiplace("CE");
+        break;
+      case -1:
+        maybeaiplace("SE");
+        break;
+      default:
+        console.log("Something broke!");
+        break;
+    }
+  } else {
+    console.log("I got to vBlock, but I didn't find one.");
+    aiMove();
+  }
+}
 
 //SO: This works insofar as it will find and block a line. 
 //BUT: Once it does so, it gets stuck trying to do the same move forever, and the player winds up taking the O turn.
-function blockCheck(){
+function hBlockCheck(){
   const tRowTest = game1.toprow.filter(element => element === "X");
   const mRowTest = game1.midrow.filter(element => element === "X");
   const bRowTest = game1.botrow.filter(element => element === "X");
@@ -310,7 +380,7 @@ function blockCheck(){
         break;
     }
   } else {
-    aiMove();
+    vBlockCheck();
   }
 }
 
@@ -324,8 +394,10 @@ function maybeaiplace(position){
 }
 
 function aiMove(){
-  if (9 === game1.toprow.length + game1.midrow.length + game1.botrow.length){
-    console.log("All spaces are filled up, dingus!");
+  if (game1.toprow.length + game1.midrow.length + game1.botrow.length === 9 && !game1.toprow.includes(undefined) && !game1.midrow.includes(undefined) && !game1.botrow.includes(undefined)){
+    $("#ticTacTurn").html("Draw");
+    game1.won = true;
+    $("#playAgain").show();
   } else {
     const pos = [parseInt(Math.random() * 3 + 0), parseInt(Math.random() * 3 + 0)]
     switch (pos[0]){
