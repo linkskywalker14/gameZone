@@ -1,8 +1,8 @@
 //TIC TAC TOE
 //1. Global Variables, Constructors, Prototypes
 //2. Functions (Back End)
-//3. Functions (Player Controls)
-//4. Functions (Options Menu)
+//3. Functions (Exclusive to AI Players)
+//4. Functions (Player Controls & Options)
 //5. User Interface Logic
 
 //######
@@ -98,6 +98,79 @@ function placeReal(position){
   }
 }
 
+//The openSpaceCheck function is called whenever a human's move is made. It confirms a space is available before allowing the move to go forward.
+//!!!!!!!!!!This function can almost certainly be refactored out of existence. Perhaps by combining it with "Place Real?"!!!!!!!!!!
+
+function openSpaceCheck(position){
+  switch(position){
+    case "NW":
+      if (game1.toprow[0] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "NC":
+      if (game1.toprow[1] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "NE":
+      if (game1.toprow[2] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "CW":
+      if (game1.midrow[0] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "CC":
+      if (game1.midrow[1] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "CE":
+      if (game1.midrow[2] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "SW":
+      if (game1.botrow[0] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "SC":
+      if (game1.botrow[1] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    case "SE":
+      if (game1.botrow[2] === undefined){
+        return true;
+      } else {
+        console.log("That space is taken already!")
+      }
+      break;
+    default:
+      return false;
+  }
+}
+
 //The placeVis function is called whenever a move is made. It updates the visual representation of the game state, including displaying win, loss, or draw messages.
 
 function placeVis(position){
@@ -183,103 +256,135 @@ function findDWin(){
   }
 }
 
+//the storeScore function runs when the page is first loaded. It displays the locally scored W/L ratio, and if no ratio is present it creates the appropriate values in local storage.
 
+function storeScore(){
+  if (localStorage.getItem("xscore")){
+    $("#xscore").html(localStorage.getItem("xscore"));
+    $("#oscore").html(localStorage.getItem("oscore"));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function openSpaceCheck(position){
-  switch(position){
-    case "NW":
-      if (game1.toprow[0] === undefined){
-        return true;
-      } else {
-        console.log("That space is taken already!")
-      }
-      break;
-    case "NC":
-      if (game1.toprow[1] === undefined){
-        return true;
-      } else {
-        console.log("That space is taken already!")
-      }
-      break;
-    case "NE":
-      if (game1.toprow[2] === undefined){
-        return true;
-      } else {
-        console.log("That space is taken already!")
-      }
-      break;
-    case "CW":
-      if (game1.midrow[0] === undefined){
-        return true;
-      } else {
-        console.log("That space is taken already!")
-      }
-      break;
-    case "CC":
-      if (game1.midrow[1] === undefined){
-        return true;
-      } else {
-        console.log("That space is taken already!")
-      }
-      break;
-    case "CE":
-      if (game1.midrow[2] === undefined){
-        return true;
-      } else {
-        console.log("That space is taken already!")
-      }
-      break;
-    case "SW":
-      if (game1.botrow[0] === undefined){
-        return true;
-      } else {
-        console.log("That space is taken already!")
-      }
-      break;
-    case "SC":
-      if (game1.botrow[1] === undefined){
-        return true;
-      } else {
-        console.log("That space is taken already!")
-      }
-      break;
-    case "SE":
-      if (game1.botrow[2] === undefined){
-        return true;
-      } else {
-        console.log("That space is taken already!")
-      }
-      break;
-    default:
-      return false;
+  } else {
+    localStorage.setItem("xscore", "0");
+    localStorage.setItem("oscore", "0");
+    $("#xscore").html(localStorage.getItem("xscore"));
+    $("#oscore").html(localStorage.getItem("oscore"));
   }
 }
 
-//Block Checks
-//asdf
+//the updateScore function is called when the game ends, and updates the W/L ratio kept in local storage.
+
+function updateScore(winner){
+  let x = parseInt(localStorage.getItem(winner));
+  x = x + 1;
+  localStorage.setItem(winner, x);
+  storeScore();
+}
+
+//######
+//3. Functions (Exclusive to AI Players)
+//######
+
+//the aiMove function selects an open board space at random. It is the extent of the level 1 AI, and the last-resort behavior of the level 2 AI.
+
+function aiMove(){
+  if (game1.toprow.length + game1.midrow.length + game1.botrow.length === 9 && !game1.toprow.includes(undefined) && !game1.midrow.includes(undefined) && !game1.botrow.includes(undefined)){
+    $("#ticTacTurn").html("Draw");
+    game1.won = true;
+    $("#playAgain").show();
+  } else {
+    const pos = [parseInt(Math.random() * 3 + 0), parseInt(Math.random() * 3 + 0)]
+    switch (pos[0]){
+      case 0:
+        console.log("Top row, " + pos[1] + " position is " + game1.toprow[pos[1]]);
+        if (game1.toprow[pos[1]] === undefined){
+          aiPlace(pos);
+        } else {
+          aiMove();
+        }
+        break;
+      case 1:
+        console.log("Middle row, " + pos[1] + " position is " + game1.midrow[pos[1]]);
+        if (game1.midrow[pos[1]] === undefined){
+          aiPlace(pos);
+        } else {
+          aiMove();
+        } 
+        break;
+      case 2:
+        console.log("Bottom row, " + pos[1] + " position is " + game1.botrow[pos[1]]);
+        if (game1.botrow[pos[1]] === undefined){
+          aiPlace(pos);
+        } else {
+          aiMove();
+        }  
+        break;
+      default:
+        console.log("AI placement error!");
+    }
+  }
+}
+
+//the aiPlace function converts the random numbers generated in the aiMove function into actual places on the board.
+
+function aiPlace(pos){
+  console.log("I got there! Row: " + pos[0] + " & Col: " + pos[1]);
+  switch (pos[0]){
+    case 0:
+      switch (pos[1]){
+        case 0:
+          maybeaiplace("NW");
+          break;
+        case 1:
+          maybeaiplace("NC");
+          break;
+        case 2:
+          maybeaiplace("NE");
+          break;
+      }
+      break;
+    case 1:
+      switch (pos[1]){
+        case 0:
+          maybeaiplace("CW");
+          break;
+        case 1:
+          maybeaiplace("CC");
+          break;
+        case 2:
+          maybeaiplace("CE");
+          break;
+      }
+      break;
+    case 2:
+      switch (pos[1]){
+        case 0:
+          maybeaiplace("SW");
+          break;
+        case 1:
+          maybeaiplace("SC");
+          break;
+        case 2:
+          maybeaiplace("SE");
+          break;
+      }
+      break;
+  }
+}
+
+//the maybeAiPlace function is called after the AI has decided on what its move ought to be. It checks to ensure the game is still going, then calls the same placement functions human players use.
+//!!!!!!!!!!This should certainly be refactored out of existence. !!!!!!!!!!
+
+function maybeaiplace(position){
+  if (game1.won === false){
+    placeReal(position);
+    placeVis(position);
+  } else {
+    console.log("The game is over. I'm not gonna do shit.");
+  }  
+}
+
+//the hBlockCheck, vBlockCheck, and dBlockCheck functions are call in sequence by the level 2 AI. They identify near-wins by the human player, and attempt to circumvent them.
+
 function hBlockCheck(){
   const tRowTest = game1.toprow.filter(element => element === "X");
   const mRowTest = game1.midrow.filter(element => element === "X");
@@ -461,163 +566,8 @@ function dBlockCheck(){
   }
 }
 
-function maybeaiplace(position){
-  if (game1.won === false){
-    placeReal(position);
-    placeVis(position);
-  } else {
-    console.log("The game is over. I'm not gonna do shit.");
-  }  
-}
-
-function aiMove(){
-  if (game1.toprow.length + game1.midrow.length + game1.botrow.length === 9 && !game1.toprow.includes(undefined) && !game1.midrow.includes(undefined) && !game1.botrow.includes(undefined)){
-    $("#ticTacTurn").html("Draw");
-    game1.won = true;
-    $("#playAgain").show();
-  } else {
-    const pos = [parseInt(Math.random() * 3 + 0), parseInt(Math.random() * 3 + 0)]
-    switch (pos[0]){
-      case 0:
-        console.log("Top row, " + pos[1] + " position is " + game1.toprow[pos[1]]);
-        if (game1.toprow[pos[1]] === undefined){
-          aiPlace(pos);
-        } else {
-          aiMove();
-        }
-        break;
-      case 1:
-        console.log("Middle row, " + pos[1] + " position is " + game1.midrow[pos[1]]);
-        if (game1.midrow[pos[1]] === undefined){
-          aiPlace(pos);
-        } else {
-          aiMove();
-        } 
-        break;
-      case 2:
-        console.log("Bottom row, " + pos[1] + " position is " + game1.botrow[pos[1]]);
-        if (game1.botrow[pos[1]] === undefined){
-          aiPlace(pos);
-        } else {
-          aiMove();
-        }  
-        break;
-      default:
-        console.log("AI placement error!");
-    }
-  }
-}
-
-function aiPlace(pos){
-  console.log("I got there! Row: " + pos[0] + " & Col: " + pos[1]);
-  switch (pos[0]){
-    case 0:
-      switch (pos[1]){
-        case 0:
-          maybeaiplace("NW");
-          break;
-        case 1:
-          maybeaiplace("NC");
-          break;
-        case 2:
-          maybeaiplace("NE");
-          break;
-      }
-      break;
-    case 1:
-      switch (pos[1]){
-        case 0:
-          maybeaiplace("CW");
-          break;
-        case 1:
-          maybeaiplace("CC");
-          break;
-        case 2:
-          maybeaiplace("CE");
-          break;
-      }
-      break;
-    case 2:
-      switch (pos[1]){
-        case 0:
-          maybeaiplace("SW");
-          break;
-        case 1:
-          maybeaiplace("SC");
-          break;
-        case 2:
-          maybeaiplace("SE");
-          break;
-      }
-      break;
-  }
-}
-
-function storeScore(){
-  if (localStorage.getItem("xscore")){
-    $("#xscore").html(localStorage.getItem("xscore"));
-    $("#oscore").html(localStorage.getItem("oscore"));
-
-  } else {
-    localStorage.setItem("xscore", "0");
-    localStorage.setItem("oscore", "0");
-    $("#xscore").html(localStorage.getItem("xscore"));
-    $("#oscore").html(localStorage.getItem("oscore"));
-  }
-}
-
-function updateScore(winner){
-  let x = parseInt(localStorage.getItem(winner));
-  x = x + 1;
-  localStorage.setItem(winner, x);
-  storeScore();
-}
-
-function gameInProgressCheck(level){
-  if (1 <= game1.toprow.length + game1.midrow.length + game1.botrow.length){
-    if (confirm("This will restart your game. Do you wish to continue?")){
-      aiPlayer(level);
-      newRound(game1.ai);
-    }
-  } else {
-    aiPlayer(level);
-  }
-}
-
-function aiPlayer(level){
-  if (level === game1.ai){
-    game1.ai = 0;
-    $("#easyAI").css({'background-color':''});
-    $("#hardAI").css({'background-color':''});
-  } else if (level === 1){
-    game1.ai = 1;
-    $("#easyAI").css({'background-color':'#FFA340'});
-    $("#hardAI").css({'background-color':''});
-  } else if (level === 2){
-    game1.ai = 2;
-    $("#hardAI").css({'background-color':'#FFA340'});
-    $("#easyAI").css({'background-color':''});
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //######
-//ZZZ. Functions (Player Controls)
+//4. Functions (Player Controls & Options)
 //######
 
 //The maybePlace function is called whenever a player clicks a space on the board. It checks if the space is open, calls the functions which make the appropriate move, and summons the AI player if any.
@@ -639,6 +589,37 @@ function maybePlace(position){
   }    
 }
 
+//The gameInProgressCheck function is called whenever the player changes the level of the game's AI. If there is a game in progress, it prompts a restart of the game.
+
+function gameInProgressCheck(level){
+  if (1 <= game1.toprow.length + game1.midrow.length + game1.botrow.length){
+    if (confirm("This will restart your game. Do you wish to continue?")){
+      aiPlayer(level);
+      newRound(game1.ai);
+    }
+  } else {
+    aiPlayer(level);
+  }
+}
+
+//The aiPlayer function is called when the player uses the option menu to alter the level of the AI player. It updates the AI level, and the highlighting on the menu.
+
+function aiPlayer(level){
+  if (level === game1.ai){
+    game1.ai = 0;
+    $("#easyAI").css({'background-color':''});
+    $("#hardAI").css({'background-color':''});
+  } else if (level === 1){
+    game1.ai = 1;
+    $("#easyAI").css({'background-color':'#FFA340'});
+    $("#hardAI").css({'background-color':''});
+  } else if (level === 2){
+    game1.ai = 2;
+    $("#hardAI").css({'background-color':'#FFA340'});
+    $("#easyAI").css({'background-color':''});
+  }
+}
+
 //The newRound function is only available after the game ends and the "Play Again?" button appears.
 
 function newRound(ai) {
@@ -649,7 +630,9 @@ function newRound(ai) {
   $("#ticTacTurn").html("X goes first");
 }
 
-//Attaching attaching listeners to the page's UI.
+//######
+//5. User Interface Logic
+//######
 
 $(document).ready(function() {
   
