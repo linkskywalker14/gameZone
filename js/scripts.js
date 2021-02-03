@@ -14,13 +14,13 @@
 let rounds = [];
 let roundIndex = 0;
 
-function Settings(cheating, twoDice, aiBad) {
+function Settings(cheating, twoDice, ai) {
   this.cheating = cheating;
   this.twoDice = twoDice;
-  this.aiBad = aiBad;
+  this.ai = ai;
 }
 
-let setting = new Settings(false,false,false);
+let setting = new Settings(false,false,1);
 
 //the Rounds constructor creates objects which contain all the variables necessary for each new round of the game.
 function Round(player, rolls, ending, round, total) {
@@ -168,7 +168,7 @@ function aiPlayer(){
   roundIndex++;
   rounds.unshift(new Round(false, [], "", 0, 0));
   let goal = aiGoal();
-  if (setting.aiBad === true){
+  if (setting.ai === 1){
     goal = goal + 7;
   }
   do {
@@ -312,21 +312,32 @@ function twoDicePig(){
 }
 
 //the changeAILevel function runs when the player clicks "AI Easy" on the options drop down menu.
-function changeAILevel(){
-  setting.aiBad = !setting.aiBad;
-  if (setting.aiBad === true){
-    $("#lvl").css({'background-color':'#FFA340'});
-  } else {
-    $("#lvl").css({'background-color':''});
+function changeAILevel(level){
+  if (level === 0){
+    setting.ai = 0;
+    $("#lvl0").css({'background-color':'#FFA340'});
+    $("#lvl1").css({'background-color':''});
+    $("#lvl2").css({'background-color':''});
+  } else if (level === 1){
+    setting.ai = 1;
+    $("#lvl0").css({'background-color':''});
+    $("#lvl1").css({'background-color':'#FFA340'});
+    $("#lvl2").css({'background-color':''});
+  } else if (level === 2){
+    setting.ai = 2;
+    $("#lvl0").css({'background-color':''});
+    $("#lvl1").css({'background-color':''});
+    $("#lvl2").css({'background-color':'#FFA340'});
   }
 }
+
 
 //######
 //4. User Interface Logic
 //######
-
 $(document).ready(function() {
   storeScore();
+  changeAILevel(1);
 
 //Main game controls.
   $("#pregame").on("click", ".start",function() {
@@ -340,13 +351,19 @@ $(document).ready(function() {
   });
 
 //Options Drop Down Menu
+  $("#options").on("click", "#lvl0",function() {
+    changeAILevel(0);
+  });
+  $("#options").on("click", "#lvl1",function() {
+    changeAILevel(1);
+  });
+  $("#options").on("click", "#lvl2",function() {
+    changeAILevel(2);
+  });
   $("#options").on("click", "#cheat",function() {
     cheatMode();
   });
   $("#options").on("click", "#2die",function() {
     twoDicePig();
-  });
-  $("#options").on("click", "#lvl",function() {
-    changeAILevel();
   });
 });

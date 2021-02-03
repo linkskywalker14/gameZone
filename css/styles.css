@@ -28,8 +28,6 @@ table td{
   border-left: 5px solid #000000;
 }
 
-
-
 .theDie {
   display: inline-block;
   background-color: #FAFADA;
@@ -95,6 +93,10 @@ table td{
 .item:hover {
   background-color: #E38DD1;
 }
+
+/*#lvl1 {
+  background-color: #FFA340;
+}*/
 
 .optionContainer {
   position: relative;
