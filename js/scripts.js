@@ -42,7 +42,7 @@ Round.prototype.who = function(){
 }
 
 //Round.totalScore pulls the total result from the active player's last round, and adds their total score from this round to return the new total.
-Round.prototype.totalScore = function(snake){
+Round.prototype.totalScore = function(){
   if (rounds[2]){
     return rounds[2].total + rounds[0].round;
   } else {
@@ -143,33 +143,36 @@ function roundEnd(hold,snake){
   if (hold === true){
     rounds[0].ending = "a hold.";
     rounds[0].total = rounds[0].totalScore();
-    if(rounds[0].player === true){
-      aiPlayer();
-    }
+    swapPlayer();
   } else if(snake === true){
     rounds[0].ending = "SNAKE EYES!";
     rounds[0].total = 0;
-    if(rounds[0].player === true){
-      aiPlayer();
-    }
+    swapPlayer();
   } else {
     rounds[0].round = 0;
     rounds[0].ending = "a break.";
     rounds[0].total = rounds[0].totalScore();
-    if (rounds[0].player === true){
-      aiPlayer();
-    }
+    swapPlayer();
   }  
+}
+
+function swapPlayer(){
+  displayTurns(rounds);
+  roundIndex++;
+  nextPlayer = !rounds[0].player;
+  rounds.unshift(new Round(nextPlayer, [], "", 0, 0));
+  if (setting.ai > 0 && rounds[0].player === false){
+    aiPlayer();
+  } else {
+    //$("#currentTotal").html("Human: " + rounds[0].total + "/100  |  RoboPig: " + rounds[1].total + "/100");
+  }
 }
 
 //the aiPlayer function is called whenever the human player's turn ends.
 function aiPlayer(){
-  displayTurns(rounds);
-  roundIndex++;
-  rounds.unshift(new Round(false, [], "", 0, 0));
   let goal = aiGoal();
   if (setting.ai === 1){
-    goal = goal + 7;
+    goal += 7;
   }
   do {
     click();
@@ -178,12 +181,8 @@ function aiPlayer(){
     }
   } while (rounds[0].totalScore() < goal);
   if (rounds[0].round != 0){
-    hold();
+    roundEnd(true,false);
   }
-  $("#currentTotal").html("Human: " + rounds[1].total + "/100  |  RoboPig: " + rounds[0].total + "/100");
-  displayTurns(rounds);
-  roundIndex++;
-  rounds.unshift(new Round(true, [], "", 0, 0));
 }
 
 //the aiGoal function is called at the start of the AI turn. It decides what number the AI will try to reach before choosing to end its turn.
@@ -214,15 +213,7 @@ function initialize(){
   rounds.unshift(new Round(true, [], "", 0, 0));
 }
 
-//the hold function runs when the player clicks "Hold." 
-function hold(){
-  const hold = true;
-  roundEnd(hold);
-}
-
 //the click function is called whenever the player clicks "Roll."
-// TWO DICE: https://en.wikipedia.org/wiki/Pig_(dice_game)#Two-Dice_Pig
-// PROBLEM: Probably sort this out into separate functions? It is getting unweildy!
 function click(){
   if (setting.twoDice === true){
     click2D();
@@ -347,7 +338,7 @@ $(document).ready(function() {
     click();
   });
   $("#controls").on("click", ".hold",function() {
-    hold();
+    roundEnd(true,false);
   });
 
 //Options Drop Down Menu
