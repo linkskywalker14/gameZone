@@ -106,9 +106,15 @@ function displayFace(face, die){
 function winCheck(){
   if (rounds[0].player && rounds[0].totalScore() >= 100){
     $("#victor").html("WE ARE SAVED! THE PLAYER WINS!");
+    rounds[0].ending = "victory.";
+    rounds[0].total = rounds[0].totalScore();
+    displayTurns(rounds);
     updateScore("humoscore")
   } else if (!rounds[0].player && rounds[0].totalScore() >= 100){
+    rounds[0].ending = "victory.";
+    rounds[0].total = rounds[0].totalScore();
     $("#victor").html("WE ARE DOOMED! THE EVIL ROBO-PIG HAS WON!");
+    displayTurns(rounds);
     updateScore("roboscore");
   }
 }
@@ -143,15 +149,18 @@ function roundEnd(hold,snake){
   if (hold === true){
     rounds[0].ending = "a hold.";
     rounds[0].total = rounds[0].totalScore();
+    ridingRolls(2);
     swapPlayer();
   } else if(snake === true){
     rounds[0].ending = "SNAKE EYES!";
     rounds[0].total = 0;
+    ridingRolls(3);
     swapPlayer();
   } else {
     rounds[0].round = 0;
     rounds[0].ending = "a break.";
     rounds[0].total = rounds[0].totalScore();
+    ridingRolls(3);
     swapPlayer();
   }  
 }
@@ -163,8 +172,6 @@ function swapPlayer(){
   rounds.unshift(new Round(nextPlayer, [], "", 0, 0));
   if (setting.ai > 0 && rounds[0].player === false){
     aiPlayer();
-  } else {
-    //$("#currentTotal").html("Human: " + rounds[0].total + "/100  |  RoboPig: " + rounds[1].total + "/100");
   }
 }
 
@@ -172,7 +179,7 @@ function swapPlayer(){
 function aiPlayer(){
   let goal = aiGoal();
   if (setting.ai === 1){
-    goal += 7;
+    goal = Math.min(goal + 7, 100);
   }
   do {
     click();
@@ -180,7 +187,7 @@ function aiPlayer(){
       break;
     }
   } while (rounds[0].totalScore() < goal);
-  if (rounds[0].round != 0){
+    if (rounds[0].round != 0 && rounds[0].total < 100){
     roundEnd(true,false);
   }
 }
@@ -210,7 +217,44 @@ function initialize(){
   $("#endgame").hide();
   $("#pregame").hide();
   $("#controls").show();
+  $("#currentRound").html("");
+  $("#currentTotal").html("");
   rounds.unshift(new Round(true, [], "", 0, 0));
+}
+
+//The riding rolls function displays the actions of the current turn.
+function ridingRolls(state){
+  let ridingRolls = "";
+  rounds[0].rolls.forEach(function(x) {
+    ridingRolls += x + " + ";
+  });
+  if (state === 1){
+    ridingRolls += "?";
+  } else if (state === 2){
+    ridingRolls += "[HOLD]";
+    displayPresentTotal()
+  } else if (state === 3){
+    ridingRolls = ridingRolls.slice(0, -4);
+    ridingRolls += ">BREAK<";
+    displayPresentTotal()
+  }
+  $("#currentRound").html(ridingRolls);
+}
+
+function displayPresentTotal(){
+  let p2 = "";
+  if (setting.ai === 0){
+    p2 = "Other Human: ";
+  } else {
+    p2 = "RoboPig: ";
+  }
+  if (!rounds[1]){
+    $("#currentTotal").html("Human: " + rounds[0].total + "/100  |  " + p2 + "0/100");
+  } else if (rounds[1].player === false) {
+    $("#currentTotal").html("Human: " + rounds[0].total + "/100  |  " + p2 + rounds[1].total + "/100");
+  } else {
+    $("#currentTotal").html("Human: " + rounds[1].total + "/100  |  " + p2 + rounds[0].total + "/100");
+  }  
 }
 
 //the click function is called whenever the player clicks "Roll."
@@ -220,13 +264,6 @@ function click(){
   } else {
     click1D();
   }
-  let ridingRolls = "";
-  rounds[0].rolls.forEach(function(x) {
-    ridingRolls += x + " + ";
-  });
-  ridingRolls += "?";
-  $("#currentRound").html(ridingRolls);
-
 }
 
 function click2D(){
@@ -243,9 +280,11 @@ function click2D(){
     } else if (faces[0] === faces[1]) {
       rounds[0].round = rounds[0].round + faces[0] + faces[1];
       rounds[0].rolls.push("Double! Roll again.");
+      ridingRolls(1);
       click();
     } else {
       rounds[0].round = rounds[0].round + faces[0] + faces[1];
+      ridingRolls(1);
       winCheck();
     }
 }
@@ -255,9 +294,10 @@ function click1D(){
   displayFace(face, "#theFirstDie");
   rounds[0].rolls.push(face);
   if (face === 1) {
-    roundEnd();
+    roundEnd(false,false);
   } else {
     rounds[0].round = rounds[0].round + face;
+    ridingRolls(1);
     winCheck();
   }
 }
