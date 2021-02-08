@@ -1,15 +1,13 @@
 //TIC TAC TOE
-//1. Global Variables, Constructors, Prototypes
+//1. Constructors, Prototypes
 //2. Functions (Back End)
 //3. Functions (Exclusive to AI Players)
 //4. Functions (Player Controls & Options)
 //5. User Interface Logic
 
 //######
-//1. Global Variables, Constructors, Prototypes
+//1. Constructors, Prototypes
 //######
-
-//Eventually all of these will need to be Objects
 
 function Board(toprow, midrow, botrow, won, ai, dude) {
   this.toprow = toprow;
@@ -19,8 +17,6 @@ function Board(toprow, midrow, botrow, won, ai, dude) {
   this.ai = ai;  //0 is human v human, 1 is random, 2 blocks win attempts, future: 3 pursues wins using the same functions used to ID blocks.
   this.dude = dude;
 }
-
-let game1 = new Board ([],[],[], false, 0, "X");
 
 //######
 //2. Functions (Back End)
@@ -106,64 +102,46 @@ function openSpaceCheck(position){
     case "NW":
       if (game1.toprow[0] === undefined){
         return true;
-      } else {
-        console.log("That space is taken already!")
       }
       break;
     case "NC":
       if (game1.toprow[1] === undefined){
         return true;
-      } else {
-        console.log("That space is taken already!")
       }
       break;
     case "NE":
       if (game1.toprow[2] === undefined){
         return true;
-      } else {
-        console.log("That space is taken already!")
       }
       break;
     case "CW":
       if (game1.midrow[0] === undefined){
         return true;
-      } else {
-        console.log("That space is taken already!")
       }
       break;
     case "CC":
       if (game1.midrow[1] === undefined){
         return true;
-      } else {
-        console.log("That space is taken already!")
       }
       break;
     case "CE":
       if (game1.midrow[2] === undefined){
         return true;
-      } else {
-        console.log("That space is taken already!")
       }
       break;
     case "SW":
       if (game1.botrow[0] === undefined){
         return true;
-      } else {
-        console.log("That space is taken already!")
       }
       break;
     case "SC":
       if (game1.botrow[1] === undefined){
         return true;
-      } else {
-        console.log("That space is taken already!")
       }
       break;
     case "SE":
       if (game1.botrow[2] === undefined){
         return true;
-      } else {
-        console.log("That space is taken already!")
       }
       break;
     default:
@@ -178,7 +156,6 @@ function placeVis(position){
   const currentDude = player();
   move.html(currentDude);
   if (game1.won === true){
-    console.log(currentDude);
     $("#ticTacTurn").html(currentDude + " has won!");
     updateScore(currentDude.toLowerCase() + "score");
   } else if (game1.toprow.length + game1.midrow.length + game1.botrow.length === 9 && !game1.toprow.includes(undefined) && !game1.midrow.includes(undefined) && !game1.botrow.includes(undefined)){
@@ -192,7 +169,6 @@ function placeVis(position){
 
 function findHWin(row){
   if (row[0] === row[1] && row[0] === row[2]){
-    console.log("AN H WIN HAS BEEN DISCOVERED!");
     game1.won = true;
     $("#playAgain").show();
     switch (row){
@@ -208,14 +184,11 @@ function findHWin(row){
       default:
         console.log("Horizontal win highlighting error");
     }
-  } else {
-    console.log("no h win yet");
   }
 }
 
 function findVWin(line){
   if (game1.toprow[line] === game1.midrow[line] && game1.toprow[line] === game1.botrow[line]){
-    console.log("A V WIN HAS BEEN DISCOVERED!");
     game1.won = true;
     $("#playAgain").show();
     switch (line){
@@ -231,28 +204,20 @@ function findVWin(line){
       default:
         console.log("Vertical win highlighting error");
     }
-  } else {
-    console.log("no v win yet");
   }
 }
 
 function findDWin(){
   if (game1.midrow[1]){
     if (game1.midrow[1] === game1.toprow[0] && game1.midrow[1] === game1.botrow[2]){
-      console.log("A D WIN HAS BEEN DISCOVERED!");
       $("#NW, #CC, #SE").css({'background-color':'red'});
       game1.won = true;
       $("#playAgain").show();
     } else if (game1.midrow[1] === game1.toprow[2] && game1.midrow[1] === game1.botrow[0]){
-      console.log("A D WIN HAS BEEN DISCOVERED!");
       $("#NE, #CC, #SW").css({'background-color':'red'});
       game1.won = true;
       $("#playAgain").show();
-    } else {
-      console.log("no d win yet, center taken tho");
     }
-  } else {
-    console.log("no d win yet, no center taken either");
   }
 }
 
@@ -295,7 +260,6 @@ function aiMove(){
     const pos = [parseInt(Math.random() * 3 + 0), parseInt(Math.random() * 3 + 0)]
     switch (pos[0]){
       case 0:
-        console.log("Top row, " + pos[1] + " position is " + game1.toprow[pos[1]]);
         if (game1.toprow[pos[1]] === undefined){
           aiPlace(pos);
         } else {
@@ -303,7 +267,6 @@ function aiMove(){
         }
         break;
       case 1:
-        console.log("Middle row, " + pos[1] + " position is " + game1.midrow[pos[1]]);
         if (game1.midrow[pos[1]] === undefined){
           aiPlace(pos);
         } else {
@@ -311,7 +274,6 @@ function aiMove(){
         } 
         break;
       case 2:
-        console.log("Bottom row, " + pos[1] + " position is " + game1.botrow[pos[1]]);
         if (game1.botrow[pos[1]] === undefined){
           aiPlace(pos);
         } else {
@@ -327,7 +289,6 @@ function aiMove(){
 //the aiPlace function converts the random numbers generated in the aiMove function into actual places on the board.
 
 function aiPlace(pos){
-  console.log("I got there! Row: " + pos[0] + " & Col: " + pos[1]);
   switch (pos[0]){
     case 0:
       switch (pos[1]){
@@ -378,9 +339,7 @@ function maybeaiplace(position){
   if (game1.won === false){
     placeReal(position);
     placeVis(position);
-  } else {
-    console.log("The game is over. I'm not gonna do shit.");
-  }  
+  }
 }
 
 //the hBlockCheck, vBlockCheck, and dBlockCheck functions are call in sequence by the level 2 AI. They identify near-wins by the human player, and attempt to circumvent them.
@@ -390,7 +349,6 @@ function hBlockCheck(){
   const mRowTest = game1.midrow.filter(element => element === "X");
   const bRowTest = game1.botrow.filter(element => element === "X");
   if (tRowTest.length === 2 && !game1.toprow.includes("O")){
-    console.log("NOT SO FAST, HUMAN! I WILL BLOCK YOUR ATTEMPT TO WIN!");
     const place = game1.toprow.findIndex(empty => empty != "X");
     switch (place){
       case 0:
@@ -407,7 +365,6 @@ function hBlockCheck(){
         break;
     }
   } else if (mRowTest.length === 2 && !game1.midrow.includes("O")){
-    console.log("NOT SO FAST, HUMAN! I WILL BLOCK YOUR ATTEMPT TO WIN!");
     const place = game1.midrow.findIndex(empty => empty != "X");
     switch (place){
       case 0:
@@ -424,7 +381,6 @@ function hBlockCheck(){
         break;
     }
   } else if (bRowTest.length === 2 && !game1.botrow.includes("O")) {
-    console.log("NOT SO FAST, HUMAN! I WILL BLOCK YOUR ATTEMPT TO WIN!");
     const place = game1.botrow.findIndex(empty => empty != "X");
     switch (place){
       case 0:
@@ -452,14 +408,9 @@ function vBlockCheck(){
   const wColumnTest = wColumn.filter(element => element === "X");
   const cColumnTest = cColumn.filter(element => element === "X");
   const eColumnTest = eColumn.filter(element => element === "X");
-  console.log("W column is " + wColumn + " wColumnTest is " + wColumnTest);
-  console.log("C column is " + cColumn + " cColumnTest is " + cColumnTest);
-  console.log("E column is " + eColumn + " eColumnTest is " + eColumnTest);
 
   if (wColumnTest.length === 2 && !wColumn.includes("O")){
-    console.log("Thought you could trick me horizontally?");
     const place = wColumn.findIndex(empty => empty != "X");
-    console.log("place is" + place);
     switch (place){
       case 0:
         maybeaiplace("NW");
@@ -475,9 +426,7 @@ function vBlockCheck(){
         break;
     }
   } else if (cColumnTest.length === 2 && !cColumn.includes("O")){
-    console.log("Thought you could trick me horizontally?");
     const place = cColumn.findIndex(empty => empty != "X");
-    console.log("place is" + place);
     switch (place){
       case 0:
         maybeaiplace("NC");
@@ -493,9 +442,7 @@ function vBlockCheck(){
         break;
     }
   } else if (eColumnTest.length === 2 && !eColumn.includes("O")) {
-    console.log("Thought you could trick me horizontally?");
     const place = eColumn.findIndex(empty => empty != "X");
-    console.log("place is" + place);
     switch (place){
       case 0:
         maybeaiplace("NE");
@@ -511,7 +458,6 @@ function vBlockCheck(){
         break;
     }
   } else {
-    console.log("I got to vBlock, but I didn't find one.");
     dBlockCheck();
   }
 }
@@ -521,12 +467,8 @@ function dBlockCheck(){
   const bDiag = [game1.toprow[0], game1.midrow[1], game1.botrow[2]];
   const fDiagTest = fDiag.filter(element => element === "X");
   const bDiagTest = bDiag.filter(element => element === "X");
-  
-  console.log("forward diagonal is " + fDiag + " fDiagTest is " + fDiagTest);
-  console.log("backward diagonal is " + bDiag + " bDiagTest is " + bDiagTest);
 
   if (fDiagTest.length === 2 && !fDiag.includes("O")){
-    console.log("I've mastered the diagonal!");
     const place = fDiag.findIndex(empty => empty != "X");
     switch (place){
       case 0:
@@ -543,9 +485,7 @@ function dBlockCheck(){
         break;
     }
   } else if (bDiagTest.length === 2 && !bDiag.includes("O")){
-    console.log("I've mastered the diagonal!");
     const place = bDiag.findIndex(empty => empty != "X");
-    console.log("place is" + place);
     switch (place){
       case 0:
         maybeaiplace("NW");
@@ -561,7 +501,6 @@ function dBlockCheck(){
         break;
     }
   } else {
-    console.log("I got to dBlock, but I didn't find one.");
     aiMove();
   }
 }
@@ -577,14 +516,11 @@ function maybePlace(position){
     if (game1.won === false){
       placeReal(position);
       placeVis(position);
-      console.log("game1.ai is currently set to: " + game1.ai);
       if (game1.ai === 1){
         aiMove();
       } else if (game1.ai === 2){
         hBlockCheck();
       }
-    } else {
-      console.log("The game is over. I'm not gonna do shit.");
     }
   }    
 }
@@ -633,6 +569,8 @@ function newRound(ai) {
 //######
 //5. User Interface Logic
 //######
+
+let game1 = new Board ([],[],[], false, 0, "X");
 
 $(document).ready(function() {
   

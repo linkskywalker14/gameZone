@@ -1,18 +1,21 @@
 //PIG DICE
-//1. Global Variables, Constructors, Prototypes
+//1. Constructors, Prototypes
 //2. Functions (Back End)
 //3. Functions (Player Controls)
 //4. Functions (Options Menu)
 //5. User Interface Logic
 
 //######
-//1. Global Variables, Constructors, Prototypes
+//1. Constructors, Prototypes
 //######
 
 //Eventually all of these will need to be Objects
 
-let rounds = [];
-let roundIndex = 0;
+function Game(rounds, roundIndex){
+  this.rounds = rounds;
+  this.roundIndex = roundIndex;
+  this.setting = new Settings(false,false,1);
+}
 
 function Settings(cheating, twoDice, ai) {
   this.cheating = cheating;
@@ -20,11 +23,9 @@ function Settings(cheating, twoDice, ai) {
   this.ai = ai;
 }
 
-let setting = new Settings(false,false,1);
-
 //the Rounds constructor creates objects which contain all the variables necessary for each new round of the game.
 function Round(player, rolls, ending, round, total) {
-  this.turn = roundIndex + 1;
+  this.turn = game1.roundIndex + 1;
   this.player = player;
   this.rolls = rolls;
   this.ending = ending;
@@ -36,6 +37,8 @@ function Round(player, rolls, ending, round, total) {
 Round.prototype.who = function(){
   if (this.player === true){
     return "Our noble Human champion";
+  } else if (game1.setting.ai === 0){
+    return "That other human person"
   } else {
     return "The evil ROBO PIG oppressor";
   }
@@ -43,10 +46,10 @@ Round.prototype.who = function(){
 
 //Round.totalScore pulls the total result from the active player's last round, and adds their total score from this round to return the new total.
 Round.prototype.totalScore = function(){
-  if (rounds[2]){
-    return rounds[2].total + rounds[0].round;
+  if (game1.rounds[2]){
+    return game1.rounds[2].total + game1.rounds[0].round;
   } else {
-    return rounds[0].round;
+    return game1.rounds[0].round;
   }
 }
 
@@ -56,7 +59,7 @@ Round.prototype.totalScore = function(){
 
 //the rollD6 function is called when either player rolls the die. It returns a value between 1 and 6. If cheating is active, the number is weighted.
 function rollD6(){
-  if (setting.cheating === true){
+  if (game1.setting.cheating === true){
     const loadedD6 = [1, 2, 3, 4, 4, 5, 6, 6];
     const x = parseInt(Math.random() * 8 + 0);
     return loadedD6[x];
@@ -66,10 +69,10 @@ function rollD6(){
 }
 
 //The displayTurns function is called at the end of each round, and updates the display of all turns so far.
-function displayTurns(rounds){
+function displayTurns(){
   let turnList = $("ul#turns");
   let htmlForList = "";
-  rounds.forEach(function(x) {
+  game1.rounds.forEach(function(x) {
     htmlForList += "<li class='turnList' id='" + x.player +"turn'><u><strong>Turn " + x.turn + ":</strong></u> " + x.who() + " rolled " + x.rolls.length + " times. (" + x.rolls + ") <br />Turn ended in " + x.ending + " They added " + x.round + " to their score, for a <strong>total of " + x.total + ".</strong>";
   });
   turnList.html(htmlForList);
@@ -104,17 +107,21 @@ function displayFace(face, die){
 
 //the winCheck function is called after each die roll to determine if the active player has reached 100 points.
 function winCheck(){
-  if (rounds[0].player && rounds[0].totalScore() >= 100){
+  if (game1.rounds[0].player && game1.rounds[0].totalScore() >= 100){
     $("#victor").html("WE ARE SAVED! THE PLAYER WINS!");
-    rounds[0].ending = "victory.";
-    rounds[0].total = rounds[0].totalScore();
-    displayTurns(rounds);
+    game1.rounds[0].ending = "victory.";
+    game1.rounds[0].total = game1.rounds[0].totalScore();
+    displayTurns();
     updateScore("humoscore")
-  } else if (!rounds[0].player && rounds[0].totalScore() >= 100){
-    rounds[0].ending = "victory.";
-    rounds[0].total = rounds[0].totalScore();
-    $("#victor").html("WE ARE DOOMED! THE EVIL ROBO-PIG HAS WON!");
-    displayTurns(rounds);
+  } else if (!game1.rounds[0].player && game1.rounds[0].totalScore() >= 100){
+    game1.rounds[0].ending = "victory.";
+    game1.rounds[0].total = game1.rounds[0].totalScore();
+    if (game1.setting.ai === 0){
+      $("#victor").html("Such treachery! The human serving as proxy for the evil robo pig has won!");
+    } else {
+      $("#victor").html("WE ARE DOOMED! THE EVIL ROBO-PIG HAS WON!");
+    }  
+    displayTurns();
     updateScore("roboscore");
   }
 }
@@ -147,30 +154,31 @@ function updateScore(winner){
 //the roundEnd function runs either when the active player rolls a 1, or chooses to hold. It updates scores appropriately, and passes the turn to the other player.
 function roundEnd(hold,snake){
   if (hold === true){
-    rounds[0].ending = "a hold.";
-    rounds[0].total = rounds[0].totalScore();
+    game1.rounds[0].ending = "a hold.";
+    game1.rounds[0].total = game1.rounds[0].totalScore();
     ridingRolls(2);
     swapPlayer();
   } else if(snake === true){
-    rounds[0].ending = "SNAKE EYES!";
-    rounds[0].total = 0;
+    game1.rounds[0].round = 0;
+    game1.rounds[0].ending = "SNAKE EYES!";
+    game1.rounds[0].total = 0;
     ridingRolls(3);
     swapPlayer();
   } else {
-    rounds[0].round = 0;
-    rounds[0].ending = "a break.";
-    rounds[0].total = rounds[0].totalScore();
+    game1.rounds[0].round = 0;
+    game1.rounds[0].ending = "a break.";
+    game1.rounds[0].total = game1.rounds[0].totalScore();
     ridingRolls(3);
     swapPlayer();
   }  
 }
 
 function swapPlayer(){
-  displayTurns(rounds);
-  roundIndex++;
-  nextPlayer = !rounds[0].player;
-  rounds.unshift(new Round(nextPlayer, [], "", 0, 0));
-  if (setting.ai > 0 && rounds[0].player === false){
+  displayTurns();
+  game1.roundIndex++;
+  nextPlayer = !game1.rounds[0].player;
+  game1.rounds.unshift(new Round(nextPlayer, [], "", 0, 0));
+  if (game1.setting.ai > 0 && game1.rounds[0].player === false){
     aiPlayer();
   }
 }
@@ -178,30 +186,30 @@ function swapPlayer(){
 //the aiPlayer function is called whenever the human player's turn ends.
 function aiPlayer(){
   let goal = aiGoal();
-  if (setting.ai === 1){
+  if (game1.setting.ai === 1){
     goal = Math.min(goal + 7, 100);
   }
   do {
     click();
-    if (rounds[0].round === 0){
+    if (game1.rounds[0].round === 0){
       break;
     }
-  } while (rounds[0].totalScore() < goal);
-    if (rounds[0].round != 0 && rounds[0].total < 100){
+  } while (game1.rounds[0].totalScore() < goal);
+    if (game1.rounds[0].round != 0 && game1.rounds[0].total < 100){
     roundEnd(true,false);
   }
 }
 
 //the aiGoal function is called at the start of the AI turn. It decides what number the AI will try to reach before choosing to end its turn.
 function aiGoal(){
-  if (100 <= rounds[0].totalScore() + 20) {
+  if (100 <= game1.rounds[0].totalScore() + 20) {
     return 100;
-  } else if (15 < rounds[1].total - rounds[0].totalScore()) {
-    return rounds[0].totalScore() + 15;
-  } else if (rounds[1].total > rounds[0].totalScore()){
-    return rounds[1].total + 1;
-  } else if (rounds[1].total <= rounds[0].totalScore()){
-    return rounds[0].totalScore() + 5;
+  } else if (15 < game1.rounds[1].total - game1.rounds[0].totalScore()) {
+    return game1.rounds[0].totalScore() + 15;
+  } else if (game1.rounds[1].total > game1.rounds[0].totalScore()){
+    return game1.rounds[1].total + 1;
+  } else if (game1.rounds[1].total <= game1.rounds[0].totalScore()){
+    return game1.rounds[0].totalScore() + 5;
   }
 }
 
@@ -211,21 +219,21 @@ function aiGoal(){
 
 //the initialize function runs when players click the "Start Game" buttom.
 function initialize(){
-  rounds = [];
-  roundIndex = 0;
-  displayTurns(rounds);
+  game1.rounds = [];
+  game1.roundIndex = 0;
+  displayTurns();
   $("#endgame").hide();
   $("#pregame").hide();
   $("#controls").show();
   $("#currentRound").html("");
   $("#currentTotal").html("");
-  rounds.unshift(new Round(true, [], "", 0, 0));
+  game1.rounds.unshift(new Round(true, [], "", 0, 0));
 }
 
 //The riding rolls function displays the actions of the current turn.
 function ridingRolls(state){
   let ridingRolls = "";
-  rounds[0].rolls.forEach(function(x) {
+  game1.rounds[0].rolls.forEach(function(x) {
     ridingRolls += x + " + ";
   });
   if (state === 1){
@@ -243,23 +251,23 @@ function ridingRolls(state){
 
 function displayPresentTotal(){
   let p2 = "";
-  if (setting.ai === 0){
+  if (game1.setting.ai === 0){
     p2 = "Other Human: ";
   } else {
     p2 = "RoboPig: ";
   }
-  if (!rounds[1]){
-    $("#currentTotal").html("Human: " + rounds[0].total + "/100  |  " + p2 + "0/100");
-  } else if (rounds[1].player === false) {
-    $("#currentTotal").html("Human: " + rounds[0].total + "/100  |  " + p2 + rounds[1].total + "/100");
+  if (!game1.rounds[1]){
+    $("#currentTotal").html("Human: " + game1.rounds[0].total + "/100  |  " + p2 + "0/100");
+  } else if (game1.rounds[1].player === false) {
+    $("#currentTotal").html("Human: " + game1.rounds[0].total + "/100  |  " + p2 + game1.rounds[1].total + "/100");
   } else {
-    $("#currentTotal").html("Human: " + rounds[1].total + "/100  |  " + p2 + rounds[0].total + "/100");
+    $("#currentTotal").html("Human: " + game1.rounds[1].total + "/100  |  " + p2 + game1.rounds[0].total + "/100");
   }  
 }
 
 //the click function is called whenever the player clicks "Roll."
 function click(){
-  if (setting.twoDice === true){
+  if (game1.setting.twoDice === true){
     click2D();
   } else {
     click1D();
@@ -270,7 +278,7 @@ function click2D(){
   const faces = [rollD6(), rollD6()];
     displayFace(faces[0], "#theFirstDie");
     displayFace(faces[1], "#theSecondDie");
-    rounds[0].rolls.push(faces[0] + faces[1]);
+    game1.rounds[0].rolls.push(faces[0] + faces[1]);
     if (faces[0] + faces[1] === 2) {
       const hold = false;
       const snake = true;
@@ -278,12 +286,12 @@ function click2D(){
     } else if (faces[0] === 1 || faces[1] === 1) {
       roundEnd();
     } else if (faces[0] === faces[1]) {
-      rounds[0].round = rounds[0].round + faces[0] + faces[1];
-      rounds[0].rolls.push("Double! Roll again.");
+      game1.rounds[0].round = game1.rounds[0].round + faces[0] + faces[1];
+      game1.rounds[0].rolls.push("Double! Roll again");
       ridingRolls(1);
       click();
     } else {
-      rounds[0].round = rounds[0].round + faces[0] + faces[1];
+      game1.rounds[0].round = game1.rounds[0].round + faces[0] + faces[1];
       ridingRolls(1);
       winCheck();
     }
@@ -292,11 +300,11 @@ function click2D(){
 function click1D(){
   const face = rollD6();
   displayFace(face, "#theFirstDie");
-  rounds[0].rolls.push(face);
+  game1.rounds[0].rolls.push(face);
   if (face === 1) {
     roundEnd(false,false);
   } else {
-    rounds[0].round = rounds[0].round + face;
+    game1.rounds[0].round = game1.rounds[0].round + face;
     ridingRolls(1);
     winCheck();
   }
@@ -308,8 +316,8 @@ function click1D(){
 
 //the cheatMode function runs when the player clicks "Cheat" on the options drop down menu.
 function cheatMode(){
-  setting.cheating = !setting.cheating;
-  if (setting.cheating === true){
+  game1.setting.cheating = !game1.setting.cheating;
+  if (game1.setting.cheating === true){
     $(".theDie").css({'background-color':'#FFA340'});
     $("#cheat").css({'background-color':'#FFA340'});
   } else {
@@ -320,15 +328,14 @@ function cheatMode(){
 
 //the twoDicePig function runs when the player clicks "Two Dice" on the options drop down menu.
 function twoDicePig(){
-  if (roundIndex > 0){
-    const x = confirm("This will restart your game. Do you wish to continue?");
-    if (x === true){
+  if (game1.roundIndex > 0){
+    if (confirm("This will restart your game. Do you wish to continue?")){
       initialize();
       twoDicePig();
     }
   } else {
-    setting.twoDice = !setting.twoDice;
-    if (setting.twoDice === true){
+    game1.setting.twoDice = !game1.setting.twoDice;
+    if (game1.setting.twoDice === true){
       $("#theSecondDie").css({'display' : 'inline-block'});
       $("#twoDiceRules").show();
       $("#oneDiceRules").hide();
@@ -342,20 +349,31 @@ function twoDicePig(){
   }
 }
 
+function gameInProgressCheck(level){
+  if (game1.rounds.length > 0){
+    if (confirm("This will restart your game. Do you wish to continue?")){
+      changeAILevel(level);
+      initialize();
+    }
+  } else {
+    changeAILevel(level);
+  }
+}
+
 //the changeAILevel function runs when the player clicks "AI Easy" on the options drop down menu.
 function changeAILevel(level){
   if (level === 0){
-    setting.ai = 0;
+    game1.setting.ai = 0;
     $("#lvl0").css({'background-color':'#FFA340'});
     $("#lvl1").css({'background-color':''});
     $("#lvl2").css({'background-color':''});
   } else if (level === 1){
-    setting.ai = 1;
+    game1.setting.ai = 1;
     $("#lvl0").css({'background-color':''});
     $("#lvl1").css({'background-color':'#FFA340'});
     $("#lvl2").css({'background-color':''});
   } else if (level === 2){
-    setting.ai = 2;
+    game1.setting.ai = 2;
     $("#lvl0").css({'background-color':''});
     $("#lvl1").css({'background-color':''});
     $("#lvl2").css({'background-color':'#FFA340'});
@@ -366,6 +384,8 @@ function changeAILevel(level){
 //######
 //4. User Interface Logic
 //######
+let game1 = new Game([], 0)
+
 $(document).ready(function() {
   storeScore();
   changeAILevel(1);
@@ -383,13 +403,13 @@ $(document).ready(function() {
 
 //Options Drop Down Menu
   $("#options").on("click", "#lvl0",function() {
-    changeAILevel(0);
+    gameInProgressCheck(0);
   });
   $("#options").on("click", "#lvl1",function() {
-    changeAILevel(1);
+    gameInProgressCheck(1);
   });
   $("#options").on("click", "#lvl2",function() {
-    changeAILevel(2);
+    gameInProgressCheck(2);
   });
   $("#options").on("click", "#cheat",function() {
     cheatMode();
