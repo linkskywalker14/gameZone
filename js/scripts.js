@@ -57,6 +57,18 @@ Round.prototype.totalScore = function(){
 //2. Functions (Back End)
 //######
 
+//I am somewhat ignorant of the specifics here.
+//the sleep function, and the chill async function, are called as the AI makes its turn.
+//I am not entirely clear why they need to be two functions, or what exactly Promise or async are doing.
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function chill() {
+  console.log("I'm just chillin, daddio!");
+  await sleep(2000);  
+}
+
 //the rollD6 function is called when either player rolls the die. It returns a value between 1 and 6. If cheating is active, the number is weighted.
 function rollD6(){
   if (game1.setting.cheating === true){
@@ -184,12 +196,15 @@ function swapPlayer(){
 }
 
 //the aiPlayer function is called whenever the human player's turn ends.
-function aiPlayer(){
+async function aiPlayer(){
+  document.getElementById('roll').disabled = true;
+  document.getElementById('hold').disabled = true;
   let goal = aiGoal();
   if (game1.setting.ai === 1){
     goal = Math.min(goal + 7, 100);
   }
   do {
+    await sleep(800);
     click();
     if (game1.rounds[0].round === 0){
       break;
@@ -198,6 +213,8 @@ function aiPlayer(){
     if (game1.rounds[0].round != 0 && game1.rounds[0].total < 100){
     roundEnd(true,false);
   }
+  document.getElementById('roll').disabled = false;
+  document.getElementById('hold').disabled = false;
 }
 
 //the aiGoal function is called at the start of the AI turn. It decides what number the AI will try to reach before choosing to end its turn.
@@ -394,10 +411,10 @@ $(document).ready(function() {
   $("#pregame").on("click", ".start",function() {
     initialize();
   });  
-  $("#controls").on("click", ".roll",function() {
+  $("#controls").on("click", "#roll",function() {
     click();
   });
-  $("#controls").on("click", ".hold",function() {
+  $("#controls").on("click", "#hold",function() {
     roundEnd(true,false);
   });
 

@@ -22,6 +22,11 @@ function Board(toprow, midrow, botrow, won, ai, dude) {
 //2. Functions (Back End)
 //######
 
+//The sleep function is called on the AI's turn, pausing the action to give the game a natural pace.
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 //The player function is called whenever a move is made. It returns either X or O, and updates game1.dude for the next player's turn.
 function player(){
   if (game1.dude === "X"){
@@ -511,14 +516,16 @@ function dBlockCheck(){
 
 //The maybePlace function is called whenever a player clicks a space on the board. It checks if the space is open, calls the functions which make the appropriate move, and summons the AI player if any.
 
-function maybePlace(position){
+async function maybePlace(position){
   if (openSpaceCheck(position)){
     if (game1.won === false){
       placeReal(position);
       placeVis(position);
       if (game1.ai === 1){
+        await sleep(1000);
         aiMove();
       } else if (game1.ai === 2){
+        await sleep(800);
         hBlockCheck();
       }
     }
@@ -578,40 +585,58 @@ $(document).ready(function() {
 
 //Game Board Listeners
   $("#game").on("click", "#NW",function() {
-    const position = "NW";
-    maybePlace(position);
+    if ((game1.ai === 0 || game1.dude === "X")){    
+      const position = "NW";
+      maybePlace(position);
+    }
   }); 
   $("#game").on("click", "#NC",function() {
-    const position = "NC";
-    maybePlace(position);
+    if ((game1.ai === 0 || game1.dude === "X")){  
+      const position = "NC";
+      maybePlace(position);
+    }
   }); 
   $("#game").on("click", "#NE",function() {
-    const position = "NE";
-    maybePlace(position);
+    if ((game1.ai === 0 || game1.dude === "X")){  
+      const position = "NE";
+      maybePlace(position);
+    }
   }); 
   $("#game").on("click", "#CW",function() {
-    const position = "CW";
-    maybePlace(position);
+    if ((game1.ai === 0 || game1.dude === "X")){  
+      const position = "CW";
+      maybePlace(position);
+    }
   }); 
   $("#game").on("click", "#CC",function() {
-    const position = "CC";
-    maybePlace(position);
+    if ((game1.ai === 0 || game1.dude === "X")){  
+      const position = "CC";
+      maybePlace(position);
+    }
   }); 
   $("#game").on("click", "#CE",function() {
-    const position = "CE";
-    maybePlace(position);
+    if ((game1.ai === 0 || game1.dude === "X")){  
+      const position = "CE";
+      maybePlace(position);
+    }
   }); 
   $("#game").on("click", "#SW",function() {
-    const position = "SW";
-    maybePlace(position);
+    if ((game1.ai === 0 || game1.dude === "X")){  
+      const position = "SW";
+      maybePlace(position);
+    }  
   }); 
   $("#game").on("click", "#SC",function() {
-    const position = "SC";
-    maybePlace(position);
+    if ((game1.ai === 0 || game1.dude === "X")){  
+      const position = "SC";
+      maybePlace(position);
+    }  
   }); 
   $("#game").on("click", "#SE",function() {
-    const position = "SE";
-    maybePlace(position);
+    if ((game1.ai === 0 || game1.dude === "X")){  
+      const position = "SE";
+      maybePlace(position);
+    }  
   });
 
 //Options menu listeners
