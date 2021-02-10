@@ -4,124 +4,11 @@ body{
   background-color: #FFC0CB;
 }
 
-h1, h4 {
+h1, h4, .title {
   text-align: center;
 }
 
-.title {
-  text-align: center;
-}
-
-table td{
-  text-align: center;
-  margin: 10px;
-  padding: 10px;
-  width: 60px;
-  height: 60px;
-}
-
-.tictachorizontal {
-  border-bottom: 5px solid #000000;
-}
-
-.tictacvertical {
-  border-left: 5px solid #000000;
-}
-
-.theDie {
-  display: inline-block;
-  background-color: #FAFADA;
-  border: 2px solid #000000;
-  border-radius: 5px;
-  padding: 3px 5px 3px 5px;
-  margin: 0;
-}
-
-#theSecondDie {
-  display: none;
-}
-
-#playAgain {
-  display: none;
-}
-
-#twoDiceRules {
-  display: none;
-}
-
-.turnList {
-  list-style-type: none;
-  text-indent: -25px;
-  padding: 0 0 0 30px;
-}
-
-#trueturn {
-  background-color: #ff7ad7;
-}
-
-#falseturn {
-  background-color: #ffa2c6;
-}
-
-/*Styling for the Results section of both the Loop and RegEx pages*/
-
-#endgame {
-  display: none;
-}
-
-#controls {
-  display: none;
-}
-
-
-/*Should defs be discarded*/
-
-.item, .droptext {
-  padding: 5px 16px;
-  margin: 0px;
-}
-
-.item {
-  font-weight: bold;
-}
-
-.item a:link, .item a:visited, .item a:hover, .item a:active {
-  color: black;
-  text-decoration: none;
-}
-
-.item:hover {
-  background-color: #E38DD1;
-}
-
-/*#lvl1 {
-  background-color: #FFA340;
-}*/
-
-.optionContainer {
-  position: relative;
-  display: inline-block;
-}
-
-#rules {
-  min-width: 500px;
-}
-
-#options, #navigation {
-  min-width: 200px;
-}
-
-#options, #rules, #navigation {
-  display: none;
-  position: absolute;
-  background-color: #B851A3;
-  box-shadow: 0px 10px 25px 0px rgba(95, 0, 24, 0.562);
-  z-index: 1;
-}
-
-.optionContainer:hover #options, .optionContainer:hover #navigation, .optionContainer:hover #rules {
-  display: block;
-}
+/*Game Zone Home Page*/
 
 img {
   max-width: 100%;
@@ -144,3 +31,112 @@ img {
   text-decoration: none;
 }
 
+/*Tic Tac Toe Styling*/
+
+
+table td {
+  text-align: center;
+  margin: 10px;
+  padding: 10px;
+  width: 60px;
+  height: 60px;
+}
+
+.tictachorizontal {
+  border-bottom: 5px solid #000000;
+}
+
+.tictacvertical {
+  border-left: 5px solid #000000;
+}
+
+/*Pig Dice Styling*/
+
+#rules {
+  min-width: 500px;
+}
+
+#twoDiceRules {
+  display: none;
+}
+
+.theDie {
+  display: inline-block;
+  background-color: #FAFADA;
+  border: 2px solid #000000;
+  border-radius: 5px;
+  padding: 3px 5px 3px 5px;
+  margin: 0;
+}
+
+#theSecondDie {
+  display: none;
+}
+
+.turnList {
+  list-style-type: none;
+  text-indent: -25px;
+  padding: 0 0 0 30px;
+}
+
+#trueturn {
+  background-color: #ff7ad7;
+}
+
+#falseturn {
+  background-color: #ffa2c6;
+}
+
+#playAgain {
+  display: none;
+}
+
+
+/*NOT YET SORTED*/
+
+#endgame {
+  display: none;
+}
+
+#controls {
+  display: none;
+}
+
+.item, .droptext {
+  padding: 5px 16px;
+  margin: 0px;
+}
+
+.item {
+  font-weight: bold;
+}
+
+.item a:link, .item a:visited, .item a:hover, .item a:active {
+  color: black;
+  text-decoration: none;
+}
+
+.item:hover {
+  background-color: #E38DD1;
+}
+
+.optionContainer {
+  position: relative;
+  display: inline-block;
+}
+
+#options, #navigation {
+  min-width: 200px;
+}
+
+#options, #rules, #navigation {
+  display: none;
+  position: absolute;
+  background-color: #B851A3;
+  box-shadow: 0px 10px 25px 0px rgba(95, 0, 24, 0.562);
+  z-index: 1;
+}
+
+.optionContainer:hover #options, .optionContainer:hover #navigation, .optionContainer:hover #rules {
+  display: block;
+}

@@ -1,22 +1,24 @@
 //PIG DICE
 //1. Constructors, Prototypes
 //2. Functions (Back End)
-//3. Functions (Player Controls)
-//4. Functions (Options Menu)
-//5. User Interface Logic
+//3. Functions (AI)
+//4. Functions (Display)
+//5. Functions (Player Controls)
+//6. Functions (Options Menu)
+//7. User Interface Logic
 
 //######
 //1. Constructors, Prototypes
 //######
 
-//Eventually all of these will need to be Objects
-
+//the Game constructor creates the object which contains the settings, round information, and counts the number of rounds played.
 function Game(rounds, roundIndex){
   this.rounds = rounds;
   this.roundIndex = roundIndex;
   this.setting = new Settings(false,false,1);
 }
 
+//the Settings constructor creates the object which tracks the various options currently being used in play.
 function Settings(cheating, twoDice, ai) {
   this.cheating = cheating;
   this.twoDice = twoDice;
@@ -38,11 +40,11 @@ Round.prototype.who = function(){
   if (this.player === true){
     return "Our noble Human champion";
   } else if (game1.setting.ai === 0){
-    return "That other human person"
+    return "The wicked Human traitor";
   } else {
     return "The evil ROBO PIG oppressor";
   }
-}
+};
 
 //Round.totalScore pulls the total result from the active player's last round, and adds their total score from this round to return the new total.
 Round.prototype.totalScore = function(){
@@ -51,69 +53,19 @@ Round.prototype.totalScore = function(){
   } else {
     return game1.rounds[0].round;
   }
-}
+};
 
 //######
 //2. Functions (Back End)
 //######
 
-//I am somewhat ignorant of the specifics here.
-//the sleep function, and the chill async function, are called as the AI makes its turn.
-//I am not entirely clear why they need to be two functions, or what exactly Promise or async are doing.
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function chill() {
-  console.log("I'm just chillin, daddio!");
-  await sleep(2000);  
-}
-
 //the rollD6 function is called when either player rolls the die. It returns a value between 1 and 6. If cheating is active, the number is weighted.
 function rollD6(){
   if (game1.setting.cheating === true){
-    const loadedD6 = [1, 2, 3, 4, 4, 5, 6, 6];
-    const x = parseInt(Math.random() * 8 + 0);
-    return loadedD6[x];
+    const loadedD6 = [1, 2, 3, 4, 4, 5, 5, 6, 6];
+    return loadedD6[parseInt(Math.random() * 9)];
   } else {
     return parseInt(Math.random() * 5 + 1);
-  }
-}
-
-//The displayTurns function is called at the end of each round, and updates the display of all turns so far.
-function displayTurns(){
-  let turnList = $("ul#turns");
-  let htmlForList = "";
-  game1.rounds.forEach(function(x) {
-    htmlForList += "<li class='turnList' id='" + x.player +"turn'><u><strong>Turn " + x.turn + ":</strong></u> " + x.who() + " rolled " + x.rolls.length + " times. (" + x.rolls + ") <br />Turn ended in " + x.ending + " They added " + x.round + " to their score, for a <strong>total of " + x.total + ".</strong>";
-  });
-  turnList.html(htmlForList);
-}
-
-//The displayFace function is called whenever the dice are rolled, and updates the visual representation of the die on the page.
-function displayFace(face, die){
-  const pip = '<img src="img/pip.gif" />';
-  const nopip = '<img src="img/nopip.gif" />';
-  switch (face){
-    case (1): 
-      $(die).html(nopip + nopip + nopip + "<br />" + nopip + pip + nopip + "<br />" + nopip + nopip + nopip);
-      break;
-    case (2): 
-      $(die).html(nopip + nopip + pip + "<br />" + nopip + nopip + nopip + "<br />" + pip + nopip + nopip);
-      break;
-    case (3):  
-      $(die).html(nopip + nopip + pip + "<br />" + nopip + pip + nopip + "<br />" + pip + nopip + nopip);
-      break;
-    case (4):  
-      $(die).html(pip + nopip + pip + "<br />" + nopip + nopip + nopip + "<br />" + pip + nopip + pip);
-      break;
-    case (5):  
-      $(die).html(pip + nopip + pip + "<br />" + nopip + pip + nopip + "<br />" + pip + nopip + pip);
-      break;
-    case (6):  
-      $(die).html(pip + nopip + pip + "<br />" + pip + nopip + pip + "<br />" + pip + nopip + pip);
-      break;
-    default: $(die).html("What did you do!?");
   }
 }
 
@@ -124,7 +76,7 @@ function winCheck(){
     game1.rounds[0].ending = "victory.";
     game1.rounds[0].total = game1.rounds[0].totalScore();
     displayTurns();
-    updateScore("humoscore")
+    updateScore("humoscore");
   } else if (!game1.rounds[0].player && game1.rounds[0].totalScore() >= 100){
     game1.rounds[0].ending = "victory.";
     game1.rounds[0].total = game1.rounds[0].totalScore();
@@ -195,6 +147,10 @@ function swapPlayer(){
   }
 }
 
+//######
+//3. Functions (AI)
+//######
+
 //the aiPlayer function is called whenever the human player's turn ends.
 async function aiPlayer(){
   document.getElementById('roll').disabled = true;
@@ -230,8 +186,95 @@ function aiGoal(){
   }
 }
 
+//the sleep function is called when the AI makes its turn, to give it a more human perceptible pacing.
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 //######
-//3. Functions (Player Controls)
+//4. Functions (Display)
+//######
+
+//The displayTurns function is called at the end of each round, and updates the display of all turns so far.
+function displayTurns(){
+  let turnList = $("ul#turns");
+  let htmlForList = "";
+  game1.rounds.forEach(function(x) {
+    htmlForList += "<li class='turnList' id='" + x.player +"turn'><u><strong>Turn " + x.turn + ":</strong></u> " + x.who() + " rolled " + x.rolls.length + " times. (" + x.rolls + ") <br />Turn ended in " + x.ending + " They added " + x.round + " to their score, for a <strong>total of " + x.total + ".</strong>";
+  });
+  turnList.html(htmlForList);
+}
+
+//The displayFace function is called whenever the dice are rolled, and updates the visual representation of the die on the page.
+function displayFace(face, die){
+  const pip = '<img src="img/pip.gif" />';
+  const nopip = '<img src="img/nopip.gif" />';
+  switch (face){
+    case (1): 
+      $(die).html(nopip + nopip + nopip + "<br />" + nopip + pip + nopip + "<br />" + nopip + nopip + nopip);
+      break;
+    case (2): 
+      $(die).html(nopip + nopip + pip + "<br />" + nopip + nopip + nopip + "<br />" + pip + nopip + nopip);
+      break;
+    case (3):  
+      $(die).html(nopip + nopip + pip + "<br />" + nopip + pip + nopip + "<br />" + pip + nopip + nopip);
+      break;
+    case (4):  
+      $(die).html(pip + nopip + pip + "<br />" + nopip + nopip + nopip + "<br />" + pip + nopip + pip);
+      break;
+    case (5):  
+      $(die).html(pip + nopip + pip + "<br />" + nopip + pip + nopip + "<br />" + pip + nopip + pip);
+      break;
+    case (6):  
+      $(die).html(pip + nopip + pip + "<br />" + pip + nopip + pip + "<br />" + pip + nopip + pip);
+      break;
+    default: $(die).html("What did you do!?");
+  }
+}
+
+//The riding rolls function displays the rolls of the current round as they happen, before they're added to the total.
+function ridingRolls(state){
+  let ridingRolls = "";
+  game1.rounds[0].rolls.forEach(function(x) {
+    ridingRolls += x + " + ";
+  });
+  if (state === 1){
+    ridingRolls += "?";
+  } else if (state === 2){
+    ridingRolls += "[HOLD]";
+    displayPresentTotal();
+  } else if (state === 3){
+    ridingRolls = ridingRolls.slice(0, -4);
+    ridingRolls += ">BREAK<";
+    displayPresentTotal();
+  }
+  if (game1.rounds[0].player === true){
+    $("#currentRound").css({'color':'black'});
+  } else {
+    $("#currentRound").css({'color':'red'});
+  }
+  $("#currentRound").html(ridingRolls);
+}
+
+//The displayPresentTotal function shows what the two players current total scores are.
+function displayPresentTotal(){
+  let p2 = "";
+  if (game1.setting.ai === 0){
+    p2 = "Traitor Human: ";
+  } else {
+    p2 = "RoboPig: ";
+  }
+  if (!game1.rounds[1]){
+    $("#currentTotal").html("Human: " + game1.rounds[0].total + "/100  |  " + p2 + "0/100");
+  } else if (game1.rounds[1].player === false) {
+    $("#currentTotal").html("Human: " + game1.rounds[0].total + "/100  |  " + p2 + game1.rounds[1].total + "/100");
+  } else {
+    $("#currentTotal").html("Human: " + game1.rounds[1].total + "/100  |  " + p2 + game1.rounds[0].total + "/100");
+  }  
+}
+
+//######
+//5. Functions (Player Controls)
 //######
 
 //the initialize function runs when players click the "Start Game" buttom.
@@ -245,41 +288,6 @@ function initialize(){
   $("#currentRound").html("");
   $("#currentTotal").html("");
   game1.rounds.unshift(new Round(true, [], "", 0, 0));
-}
-
-//The riding rolls function displays the actions of the current turn.
-function ridingRolls(state){
-  let ridingRolls = "";
-  game1.rounds[0].rolls.forEach(function(x) {
-    ridingRolls += x + " + ";
-  });
-  if (state === 1){
-    ridingRolls += "?";
-  } else if (state === 2){
-    ridingRolls += "[HOLD]";
-    displayPresentTotal()
-  } else if (state === 3){
-    ridingRolls = ridingRolls.slice(0, -4);
-    ridingRolls += ">BREAK<";
-    displayPresentTotal()
-  }
-  $("#currentRound").html(ridingRolls);
-}
-
-function displayPresentTotal(){
-  let p2 = "";
-  if (game1.setting.ai === 0){
-    p2 = "Other Human: ";
-  } else {
-    p2 = "RoboPig: ";
-  }
-  if (!game1.rounds[1]){
-    $("#currentTotal").html("Human: " + game1.rounds[0].total + "/100  |  " + p2 + "0/100");
-  } else if (game1.rounds[1].player === false) {
-    $("#currentTotal").html("Human: " + game1.rounds[0].total + "/100  |  " + p2 + game1.rounds[1].total + "/100");
-  } else {
-    $("#currentTotal").html("Human: " + game1.rounds[1].total + "/100  |  " + p2 + game1.rounds[0].total + "/100");
-  }  
 }
 
 //the click function is called whenever the player clicks "Roll."
@@ -328,7 +336,7 @@ function click1D(){
 }
 
 //######
-//4. Functions (Options Menu)
+//6. Functions (Options Menu)
 //######
 
 //the cheatMode function runs when the player clicks "Cheat" on the options drop down menu.
@@ -399,9 +407,9 @@ function changeAILevel(level){
 
 
 //######
-//4. User Interface Logic
+//7. User Interface Logic
 //######
-let game1 = new Game([], 0)
+let game1 = new Game([], 0);
 
 $(document).ready(function() {
   storeScore();
