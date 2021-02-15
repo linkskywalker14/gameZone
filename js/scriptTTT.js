@@ -45,112 +45,84 @@ function player(){
 function placeReal(position){
   switch(position){
     case "NW":
-      game1.toprow[0] = game1.dude;
-      findHWin(game1.toprow);
-      findVWin(0);
-      findDWin();
-      break;
-    case "NC":
-      game1.toprow[1] = game1.dude;
-      findHWin(game1.toprow);
-      findVWin(1);
-      break;
-    case "NE":
-      game1.toprow[2] = game1.dude;
-      findHWin(game1.toprow);
-      findVWin(2);
-      findDWin();
-      break;
-    case "CW":
-      game1.midrow[0] = game1.dude;
-      findHWin(game1.midrow);
-      findVWin(0);
-      break;
-    case "CC":
-      game1.midrow[1] = game1.dude;
-      findHWin(game1.midrow);
-      findVWin(1);
-      findDWin();
-      break;
-    case "CE":
-      game1.midrow[2] = game1.dude;
-      findHWin(game1.midrow);
-      findVWin(2);
-      break;
-    case "SW":
-      game1.botrow[0] = game1.dude;
-      findHWin(game1.botrow);
-      findVWin(0);
-      findDWin();
-      break;
-    case "SC":
-      game1.botrow[1] = game1.dude;
-      findHWin(game1.botrow);
-      findVWin(1);
-      break;
-    case "SE":
-      game1.botrow[2] = game1.dude;
-      findHWin(game1.botrow);
-      findVWin(2);
-      findDWin();
-      break;
-    default:
-      console.log("WHAT DID YOU DO!?");
-  }
-}
-
-//The openSpaceCheck function is called whenever a human's move is made. It confirms a space is available before allowing the move to go forward.
-//!!!!!!!!!!This function can almost certainly be refactored out of existence. Perhaps by combining it with "Place Real?"!!!!!!!!!!
-
-function openSpaceCheck(position){
-  switch(position){
-    case "NW":
       if (game1.toprow[0] === undefined){
-        return true;
+        game1.toprow[0] = game1.dude;
+        placeVis(position);
+        findHWin(game1.toprow);
+        findVWin(0);
+        findDWin();
       }
       break;
     case "NC":
       if (game1.toprow[1] === undefined){
-        return true;
-      }
+        game1.toprow[1] = game1.dude;
+        placeVis(position);
+        findHWin(game1.toprow);
+        findVWin(1);
+      }  
       break;
     case "NE":
       if (game1.toprow[2] === undefined){
-        return true;
+        game1.toprow[2] = game1.dude;
+        placeVis(position);
+        findHWin(game1.toprow);
+        findVWin(2);
+        findDWin();
       }
       break;
     case "CW":
       if (game1.midrow[0] === undefined){
-        return true;
+        game1.midrow[0] = game1.dude;
+        placeVis(position);
+        findHWin(game1.midrow);
+        findVWin(0);
       }
       break;
     case "CC":
       if (game1.midrow[1] === undefined){
-        return true;
+        game1.midrow[1] = game1.dude;
+        placeVis(position);
+        findHWin(game1.midrow);
+        findVWin(1);
+        findDWin();
       }
       break;
     case "CE":
       if (game1.midrow[2] === undefined){
-        return true;
+        game1.midrow[2] = game1.dude;
+        placeVis(position);
+        findHWin(game1.midrow);
+        findVWin(2);
       }
       break;
     case "SW":
       if (game1.botrow[0] === undefined){
-        return true;
+        game1.botrow[0] = game1.dude;
+        placeVis(position);
+        findHWin(game1.botrow);
+        findVWin(0);
+        findDWin();
       }
       break;
     case "SC":
       if (game1.botrow[1] === undefined){
-        return true;
+        game1.botrow[1] = game1.dude;
+        placeVis(position);
+        findHWin(game1.botrow);
+        findVWin(1);
       }
       break;
     case "SE":
       if (game1.botrow[2] === undefined){
-        return true;
+        game1.botrow[2] = game1.dude;
+        placeVis(position);
+        findHWin(game1.botrow);
+        findVWin(2);
+        findDWin();
       }
       break;
     default:
-      return false;
+      console.log("WHAT DID YOU DO!?");
   }
 }
 
@@ -166,7 +138,7 @@ function placeVis(position){
   } else if (game1.toprow.length + game1.midrow.length + game1.botrow.length === 9 && !game1.toprow.includes(undefined) && !game1.midrow.includes(undefined) && !game1.botrow.includes(undefined)){
     $("#ticTacTurn").html("Draw");
     game1.won = true;
-    $("#playAgain").show();
+    $("#endgame").show();
   }
 }
 
@@ -175,7 +147,7 @@ function placeVis(position){
 function findHWin(row){
   if (row[0] === row[1] && row[0] === row[2]){
     game1.won = true;
-    $("#playAgain").show();
+    $("#endgame").show();
     switch (row){
       case game1.toprow:
         $("#NW, #NC, #NE").css({'background-color':'red'});
@@ -195,7 +167,7 @@ function findHWin(row){
 function findVWin(line){
   if (game1.toprow[line] === game1.midrow[line] && game1.toprow[line] === game1.botrow[line]){
     game1.won = true;
-    $("#playAgain").show();
+    $("#endgame").show();
     switch (line){
       case 0:
         $("#NW, #CW, #SW").css({'background-color':'red'});
@@ -217,11 +189,11 @@ function findDWin(){
     if (game1.midrow[1] === game1.toprow[0] && game1.midrow[1] === game1.botrow[2]){
       $("#NW, #CC, #SE").css({'background-color':'red'});
       game1.won = true;
-      $("#playAgain").show();
+      $("#endgame").show();
     } else if (game1.midrow[1] === game1.toprow[2] && game1.midrow[1] === game1.botrow[0]){
       $("#NE, #CC, #SW").css({'background-color':'red'});
       game1.won = true;
-      $("#playAgain").show();
+      $("#endgame").show();
     }
   }
 }
@@ -260,7 +232,7 @@ function aiMove(){
   if (game1.toprow.length + game1.midrow.length + game1.botrow.length === 9 && !game1.toprow.includes(undefined) && !game1.midrow.includes(undefined) && !game1.botrow.includes(undefined)){
     $("#ticTacTurn").html("Draw");
     game1.won = true;
-    $("#playAgain").show();
+    $("#endgame").show();
   } else {
     const pos = [parseInt(Math.random() * 3 + 0), parseInt(Math.random() * 3 + 0)]
     switch (pos[0]){
@@ -298,52 +270,42 @@ function aiPlace(pos){
     case 0:
       switch (pos[1]){
         case 0:
-          maybeaiplace("NW");
+          maybePlace("NW");
           break;
         case 1:
-          maybeaiplace("NC");
+          maybePlace("NC");
           break;
         case 2:
-          maybeaiplace("NE");
+          maybePlace("NE");
           break;
       }
       break;
     case 1:
       switch (pos[1]){
         case 0:
-          maybeaiplace("CW");
+          maybePlace("CW");
           break;
         case 1:
-          maybeaiplace("CC");
+          maybePlace("CC");
           break;
         case 2:
-          maybeaiplace("CE");
+          maybePlace("CE");
           break;
       }
       break;
     case 2:
       switch (pos[1]){
         case 0:
-          maybeaiplace("SW");
+          maybePlace("SW");
           break;
         case 1:
-          maybeaiplace("SC");
+          maybePlace("SC");
           break;
         case 2:
-          maybeaiplace("SE");
+          maybePlace("SE");
           break;
       }
       break;
-  }
-}
-
-//the maybeAiPlace function is called after the AI has decided on what its move ought to be. It checks to ensure the game is still going, then calls the same placement functions human players use.
-//!!!!!!!!!!This should certainly be refactored out of existence. !!!!!!!!!!
-
-function maybeaiplace(position){
-  if (game1.won === false){
-    placeReal(position);
-    placeVis(position);
   }
 }
 
@@ -357,13 +319,13 @@ function hBlockCheck(){
     const place = game1.toprow.findIndex(empty => empty != "X");
     switch (place){
       case 0:
-        maybeaiplace("NW");
+        maybePlace("NW");
         break;
       case 1:
-        maybeaiplace("NC");
+        maybePlace("NC");
         break;
       case -1:
-        maybeaiplace("NE");
+        maybePlace("NE");
         break;
       default:
         console.log("Something broke!");
@@ -373,13 +335,13 @@ function hBlockCheck(){
     const place = game1.midrow.findIndex(empty => empty != "X");
     switch (place){
       case 0:
-        maybeaiplace("CW");
+        maybePlace("CW");
         break;
       case 1:
-        maybeaiplace("CC");
+        maybePlace("CC");
         break;
       case -1:
-        maybeaiplace("CE");
+        maybePlace("CE");
         break;
       default:
         console.log("Something broke!");
@@ -389,13 +351,13 @@ function hBlockCheck(){
     const place = game1.botrow.findIndex(empty => empty != "X");
     switch (place){
       case 0:
-        maybeaiplace("SW");
+        maybePlace("SW");
         break;
       case 1:
-        maybeaiplace("SC");
+        maybePlace("SC");
         break;
       case -1:
-        maybeaiplace("SE");
+        maybePlace("SE");
         break;
       default:
         console.log("Something broke!");
@@ -418,13 +380,13 @@ function vBlockCheck(){
     const place = wColumn.findIndex(empty => empty != "X");
     switch (place){
       case 0:
-        maybeaiplace("NW");
+        maybePlace("NW");
         break;
       case 1:
-        maybeaiplace("CW");
+        maybePlace("CW");
         break;
       case 2:
-        maybeaiplace("SW");
+        maybePlace("SW");
         break;
       default:
         console.log("Something broke!");
@@ -434,13 +396,13 @@ function vBlockCheck(){
     const place = cColumn.findIndex(empty => empty != "X");
     switch (place){
       case 0:
-        maybeaiplace("NC");
+        maybePlace("NC");
         break;
       case 1:
-        maybeaiplace("CC");
+        maybePlace("CC");
         break;
       case 2:
-        maybeaiplace("SC");
+        maybePlace("SC");
         break;
       default:
         console.log("Something broke!");
@@ -450,13 +412,13 @@ function vBlockCheck(){
     const place = eColumn.findIndex(empty => empty != "X");
     switch (place){
       case 0:
-        maybeaiplace("NE");
+        maybePlace("NE");
         break;
       case 1:
-        maybeaiplace("CE");
+        maybePlace("CE");
         break;
       case 2:
-        maybeaiplace("SE");
+        maybePlace("SE");
         break;
       default:
         console.log("Something broke!");
@@ -477,13 +439,13 @@ function dBlockCheck(){
     const place = fDiag.findIndex(empty => empty != "X");
     switch (place){
       case 0:
-        maybeaiplace("SW");
+        maybePlace("SW");
         break;
       case 1:
-        maybeaiplace("CC");
+        maybePlace("CC");
         break;
       case 2:
-        maybeaiplace("NE");
+        maybePlace("NE");
         break;
       default:
         console.log("Something broke!");
@@ -493,13 +455,13 @@ function dBlockCheck(){
     const place = bDiag.findIndex(empty => empty != "X");
     switch (place){
       case 0:
-        maybeaiplace("NW");
+        maybePlace("NW");
         break;
       case 1:
-        maybeaiplace("CC");
+        maybePlace("CC");
         break;
       case 2:
-        maybeaiplace("SE");
+        maybePlace("SE");
         break;
       default:
         console.log("Something broke!");
@@ -517,19 +479,16 @@ function dBlockCheck(){
 //The maybePlace function is called whenever a player clicks a space on the board. It checks if the space is open, calls the functions which make the appropriate move, and summons the AI player if any.
 
 async function maybePlace(position){
-  if (openSpaceCheck(position)){
-    if (game1.won === false){
-      placeReal(position);
-      placeVis(position);
-      if (game1.ai === 1){
-        await sleep(1000);
-        aiMove();
-      } else if (game1.ai === 2){
-        await sleep(800);
-        hBlockCheck();
-      }
+  if (!game1.won){
+    placeReal(position);
+    if (game1.ai === 1 && game1.dude === "O"){
+      await sleep(600);
+      aiMove();
+    } else if (game1.ai === 2 && game1.dude === "O"){
+      await sleep(500);
+      hBlockCheck();
     }
-  }    
+  }
 }
 
 //The gameInProgressCheck function is called whenever the player changes the level of the game's AI. If there is a game in progress, it prompts a restart of the game.
@@ -566,7 +525,7 @@ function aiPlayer(level){
 //The newRound function is only available after the game ends and the "Play Again?" button appears.
 
 function newRound(ai) {
-  $("#playAgain").hide();
+  $("#endgame").hide();
   game1 = new Board ([],[],[], false, ai, "X");
   $("#NW, #NC, #NE, #CW, #CC, #CE, #SE, #SC, #SW").html("");
   $("#NW, #NC, #NE, #CW, #CC, #CE, #SE, #SC, #SW").css({'background-color':''});
@@ -648,7 +607,7 @@ $(document).ready(function() {
   });
 
 //Play again listener
-  $("#playAgain").on("click", ".start",function() {
+  $("#endgame").on("click", ".start",function() {
     newRound(game1.ai);
   });  
 });

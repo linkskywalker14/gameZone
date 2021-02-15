@@ -24,15 +24,57 @@ img {
   color: #9666D3;
 }
 
-/*I'd like to have it so the pinball image changes to display the image for whichever game you're hovering your cursor over, but I think I need JS for that.*/
-
 #mainNav a:hover, #mainNav a:active {
   color: #00CDFA;
   text-decoration: none;
 }
 
-/*Tic Tac Toe Styling*/
+/*Both Games*/
 
+#endgame {
+  display: none;
+}
+
+.item, .droptext {
+  padding: 5px 16px;
+  margin: 0px;
+}
+
+.item {
+  font-weight: bold;
+}
+
+.item a:link, .item a:visited, .item a:hover, .item a:active {
+  color: black;
+  text-decoration: none;
+}
+
+.item:hover {
+  background-color: #E38DD1;
+}
+
+.optionContainer {
+  position: relative;
+  display: inline-block;
+}
+
+#options, #navigation {
+  min-width: 200px;
+}
+
+#options, #rules, #navigation {
+  display: none;
+  position: absolute;
+  background-color: #B851A3;
+  box-shadow: 0px 10px 25px 0px rgba(95, 0, 24, 0.562);
+  z-index: 1;
+}
+
+.optionContainer:hover #options, .optionContainer:hover #navigation, .optionContainer:hover #rules {
+  display: block;
+}
+
+/*Tic Tac Toe Styling*/
 
 table td {
   text-align: center;
@@ -87,56 +129,6 @@ table td {
   background-color: #ffa2c6;
 }
 
-#playAgain {
-  display: none;
-}
-
-
-/*NOT YET SORTED*/
-
-#endgame {
-  display: none;
-}
-
 #controls {
   display: none;
-}
-
-.item, .droptext {
-  padding: 5px 16px;
-  margin: 0px;
-}
-
-.item {
-  font-weight: bold;
-}
-
-.item a:link, .item a:visited, .item a:hover, .item a:active {
-  color: black;
-  text-decoration: none;
-}
-
-.item:hover {
-  background-color: #E38DD1;
-}
-
-.optionContainer {
-  position: relative;
-  display: inline-block;
-}
-
-#options, #navigation {
-  min-width: 200px;
-}
-
-#options, #rules, #navigation {
-  display: none;
-  position: absolute;
-  background-color: #B851A3;
-  box-shadow: 0px 10px 25px 0px rgba(95, 0, 24, 0.562);
-  z-index: 1;
-}
-
-.optionContainer:hover #options, .optionContainer:hover #navigation, .optionContainer:hover #rules {
-  display: block;
 }
