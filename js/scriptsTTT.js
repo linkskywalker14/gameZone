@@ -47,78 +47,78 @@ function placeReal(position){
     case "NW":
       if (game1.toprow[0] === undefined){
         game1.toprow[0] = game1.dude;
-        placeVis(position);
         findHWin(game1.toprow);
         findVWin(0);
         findDWin();
+        placeVis(position);
       }
       break;
     case "NC":
       if (game1.toprow[1] === undefined){
         game1.toprow[1] = game1.dude;
-        placeVis(position);
         findHWin(game1.toprow);
         findVWin(1);
+        placeVis(position);
       }  
       break;
     case "NE":
       if (game1.toprow[2] === undefined){
         game1.toprow[2] = game1.dude;
-        placeVis(position);
         findHWin(game1.toprow);
         findVWin(2);
         findDWin();
+        placeVis(position);
       }
       break;
     case "CW":
       if (game1.midrow[0] === undefined){
         game1.midrow[0] = game1.dude;
-        placeVis(position);
         findHWin(game1.midrow);
         findVWin(0);
+        placeVis(position);
       }
       break;
     case "CC":
       if (game1.midrow[1] === undefined){
         game1.midrow[1] = game1.dude;
-        placeVis(position);
         findHWin(game1.midrow);
         findVWin(1);
         findDWin();
+        placeVis(position);
       }
       break;
     case "CE":
       if (game1.midrow[2] === undefined){
         game1.midrow[2] = game1.dude;
-        placeVis(position);
         findHWin(game1.midrow);
         findVWin(2);
+        placeVis(position);
       }
       break;
     case "SW":
       if (game1.botrow[0] === undefined){
         game1.botrow[0] = game1.dude;
-        placeVis(position);
         findHWin(game1.botrow);
         findVWin(0);
         findDWin();
+        placeVis(position);
       }
       break;
     case "SC":
       if (game1.botrow[1] === undefined){
         game1.botrow[1] = game1.dude;
-        placeVis(position);
         findHWin(game1.botrow);
         findVWin(1);
+        placeVis(position);
       }
       break;
     case "SE":
       if (game1.botrow[2] === undefined){
         game1.botrow[2] = game1.dude;
-        placeVis(position);
         findHWin(game1.botrow);
         findVWin(2);
         findDWin();
+        placeVis(position);
       }
       break;
     default:
