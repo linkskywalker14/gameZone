@@ -13,7 +13,8 @@ Though they are currently outside the scope of this project, there are several a
 
 - On the home page, it would be nice if the image of the person at the arcade machine changed to represent the different games as the mouse moved to hover over each option. 
 - On Tic Tac Toe, I'd like to add a 3rd level AI which runs two passes through the BlockCheck function: first to see if there's a possible win, and only if there is not, to see if there is a possible block.
-- On Tic Tac Toe, I'd like an option to set the size of the board, such that players could play _Connect Four_ if they wanted. The current infrstracutre isn't flexible enough to support this, and would likely require a complete rewrite. 
+- On Tic Tac Toe, I'd like an option to set the size of the board, such that players could play _Connect Four_ if they wanted. (7 x 6 is the official size of that game's board)The current infrstracutre isn't flexible enough to support this, and would likely require a complete rewrite.
+- It might be nice to let players enter a name for themselves, which follows them to every page of the site, and sits next to their score for each of the games. 
 
 ### Legal
 
